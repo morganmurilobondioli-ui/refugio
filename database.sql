@@ -1,8 +1,8 @@
 -- database.sql
-CREATE DATABASE IF NOT EXISTS refugio_Don_Pepito;
+CREATE DATABASE refugio_Don_Pepito;
 USE refugio_Don_Pepito;
 
-CREATE TABLE IF NOT EXISTS responsable (
+CREATE TABLE responsable (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(30) NOT NULL, 
     apellido VARCHAR(30) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS responsable (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS animal (
+CREATE TABLE animal (
     id INT AUTO_INCREMENT PRIMARY KEY, 
     nombre VARCHAR(30) NOT NULL,
     raza VARCHAR(30) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS animal (
     FOREIGN KEY (responsable_id) REFERENCES responsable(id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS duenio (
+CREATE TABLE duenio (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(30) NOT NULL,
     apellido VARCHAR(30) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS duenio (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS adopcion (
+CREATE TABLE adopcion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     animal_id INT NOT NULL,
     duenio_id INT NOT NULL,

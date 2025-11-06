@@ -1,22 +1,25 @@
-// server.js
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-require('dotenv').config();
+const express = require('express'); //el framework principal para crear el servidor.
+const cors = require('cors'); //middleware para permitir solicitudes desde otros dominios.
+const path = require('path'); //módulo nativo de Node para manejar rutas de archivos/directorios.
+require('dotenv').config(); //carga variables de entorno desde un archivo .env (por ejemplo, puerto, credenciales DB).
 
-const { testConnection } = require('./config/db');
+const { testConnection } = require('./config/db'); //Verifica que la base de datos MySQL esté conectando correctamente.
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Importar rutas
+const responsableRoutes = require('./routes/responsableRoutes'); //Rutas relacionadas con responsables.
+
+const app = express(); //app es tu instancia principal del servidor Express.
+const PORT = process.env.PORT || 3000; //PORT usa una variable de entorno (.env), o por defecto el 3000.
 
 // Middlewares
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.json()); //permite leer cuerpos JSON en peticiones POST/PUT.
+app.use(express.urlencoded({ extended: true })); //permite leer datos enviados desde formularios HTML.
+app.use(express.static('public')); //sirve archivos estáticos (HTML, CSS, JS, imágenes, etc.) desde la carpeta public/.
+app.use('/uploads', express.static('uploads')); //sirve los archivos subidos por el usuario desde /uploads.
 
-// Servir archivos subidos
-app.use('/uploads', express.static('uploads'));
+// Rutas de la API
+app.use('/api/responsables', responsableRoutes); //rutas para gestionar responsables.
 
 // Ruta de prueba
 app.get('/api/test', (req, res) => {
@@ -26,27 +29,56 @@ app.get('/api/test', (req, res) => {
     });
 });
 
+// Middleware de manejo de errores 404 | Si ninguna ruta coincide, Express llega hasta aquí.
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'Ruta no encontrada'
+    });
+});
+
+// Middleware de manejo de errores global
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    res.status(500).json({
+        success: false,
+        message: 'Error interno del servidor',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+});
+
 // Iniciar servidor
+//Probamos la conexión a la base de datos (await testConnection()).
 const startServer = async () => {
     try {
-        // Probar conexión a BD antes de iniciar
         await testConnection();
-        
+        //Si todo bien, inicia el servidor (app.listen).
         app.listen(PORT, () => {
             console.log('🚀 Servidor corriendo en:');
             console.log(`   http://localhost:${PORT}`);
             console.log(`📁 Sirviendo archivos desde: public/`);
+            console.log('📡 Rutas disponibles:');
+            console.log('   GET    /api/responsables');
+            console.log('   GET    /api/responsables/:id');
+            console.log('   POST   /api/responsables');
+            console.log('   PUT    /api/responsables/:id');
+            console.log('   DELETE /api/responsables/:id');
         });
     } catch (error) {
         console.error('❌ No se pudo iniciar el servidor:', error.message);
-        process.exit(1);
+        //Si hay error (por ejemplo, base de datos caída).
+        process.exit(1); 
     }
 };
 
 startServer();
-
-// Manejo de errores no capturados
+//Captura promesas rechazadas que no fueron atrapadas con try/catch.
 process.on('unhandledRejection', (error) => {
     console.error('❌ Error no manejado:', error);
     process.exit(1);
 });
+/* 
+Nota: 
+    Esto evita que el servidor se quede en un estado inconsistente.
+    Luego detiene el proceso de forma controlada.
+*/
