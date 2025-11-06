@@ -1,39 +1,8 @@
-# Base de Datos refugio_Don_Pepito
-
----
-
-## Tablas
-
-- **responsable**: datos de las personas responsables del refugio.
-  - id, nombre, apellido, teléfono.
-
-- **animal**: datos de los animales.
-  - id, nombre, raza, edad, peso, foto, responsable asignado.
-
-- **duenio**: datos de las personas interesadas en adoptar.
-  - id, nombre, apellido, teléfono.
-
-- **adopcion**: registros de adopciones.
-  - id, animal adoptado, dueño que adopta, fecha, documento PDF.
-
----
-
-## Relaciones
-
-- Cada animal puede tener un responsable.
-- Las adopciones conectan animales con dueños.
-- Si se borra un responsable, los animales quedan sin responsable.
-- Si se borra un animal o dueño, se eliminan sus adopciones.
-
----
-
-## Creación de la base de datos
-
-```sql
-CREATE DATABASE refugio_Don_Pepito;
+-- database.sql
+CREATE DATABASE IF NOT EXISTS refugio_Don_Pepito;
 USE refugio_Don_Pepito;
 
-CREATE TABLE responsable (
+CREATE TABLE IF NOT EXISTS responsable (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(30) NOT NULL, 
     apellido VARCHAR(30) NOT NULL,
@@ -42,7 +11,7 @@ CREATE TABLE responsable (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE animal (
+CREATE TABLE IF NOT EXISTS animal (
     id INT AUTO_INCREMENT PRIMARY KEY, 
     nombre VARCHAR(30) NOT NULL,
     raza VARCHAR(30) NOT NULL,
@@ -50,13 +19,13 @@ CREATE TABLE animal (
     peso DECIMAL(5,2), 
     descripcion VARCHAR(250),
     foto_url VARCHAR(255),
-    responsable_id CHAR(8),
     estado ENUM('disponible', 'adoptado', 'en_proceso') DEFAULT 'disponible',
+    responsable_id INT,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (responsable_id) REFERENCES responsable(id) ON DELETE SET NULL
 );
 
-CREATE TABLE duenio (
+CREATE TABLE IF NOT EXISTS duenio (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(30) NOT NULL,
     apellido VARCHAR(30) NOT NULL,
@@ -65,12 +34,12 @@ CREATE TABLE duenio (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE adopcion (
+CREATE TABLE IF NOT EXISTS adopcion (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    animal_id CHAR(8) NOT NULL,
-    duenio_id CHAR(8) NOT NULL,
+    animal_id INT NOT NULL,
+    duenio_id INT NOT NULL,
     fecha_adopcion DATE NOT NULL,
-    compromiso_url VARCHAR(255),  
+    compromiso_url VARCHAR(255),
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE CASCADE,
     FOREIGN KEY (duenio_id) REFERENCES duenio(id) ON DELETE CASCADE

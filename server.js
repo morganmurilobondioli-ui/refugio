@@ -2,7 +2,9 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const refugioRoutes = require('./controllers/refugioController');
+require('dotenv').config();
+
+const { testConnection } = require('./config/db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,14 +13,40 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
-// Servir archivos estáticos (HTML, JS, etc.)
-app.use(express.static(path.join(__dirname, 'public')));
+// Servir archivos subidos
+app.use('/uploads', express.static('uploads'));
 
-// Rutas API
-app.use('/api', refugioRoutes);
+// Ruta de prueba
+app.get('/api/test', (req, res) => {
+    res.json({ 
+        message: '✅ API funcionando correctamente',
+        timestamp: new Date()
+    });
+});
 
 // Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+const startServer = async () => {
+    try {
+        // Probar conexión a BD antes de iniciar
+        await testConnection();
+        
+        app.listen(PORT, () => {
+            console.log('🚀 Servidor corriendo en:');
+            console.log(`   http://localhost:${PORT}`);
+            console.log(`📁 Sirviendo archivos desde: public/`);
+        });
+    } catch (error) {
+        console.error('❌ No se pudo iniciar el servidor:', error.message);
+        process.exit(1);
+    }
+};
+
+startServer();
+
+// Manejo de errores no capturados
+process.on('unhandledRejection', (error) => {
+    console.error('❌ Error no manejado:', error);
+    process.exit(1);
 });
