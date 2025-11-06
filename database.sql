@@ -1,4 +1,3 @@
--- database.sql
 CREATE DATABASE refugio_Don_Pepito;
 USE refugio_Don_Pepito;
 
@@ -20,7 +19,7 @@ CREATE TABLE animal (
     descripcion VARCHAR(250),
     foto_url VARCHAR(255),
     estado ENUM('disponible', 'adoptado', 'en_proceso') DEFAULT 'disponible',
-    responsable_id INT,
+    responsable_id INT, 
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (responsable_id) REFERENCES responsable(id) ON DELETE SET NULL
 );
@@ -36,10 +35,10 @@ CREATE TABLE duenio (
 
 CREATE TABLE adopcion (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    animal_id INT NOT NULL,
-    duenio_id INT NOT NULL,
+    animal_id INT NOT NULL,   
+    duenio_id INT NOT NULL,  
     fecha_adopcion DATE NOT NULL,
-    compromiso_url VARCHAR(255),
+    compromiso_url VARCHAR(255),  
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE CASCADE,
     FOREIGN KEY (duenio_id) REFERENCES duenio(id) ON DELETE CASCADE

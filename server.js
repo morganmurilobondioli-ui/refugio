@@ -1,25 +1,27 @@
-const express = require('express'); //el framework principal para crear el servidor.
-const cors = require('cors'); //middleware para permitir solicitudes desde otros dominios.
-const path = require('path'); //módulo nativo de Node para manejar rutas de archivos/directorios.
-require('dotenv').config(); //carga variables de entorno desde un archivo .env (por ejemplo, puerto, credenciales DB).
+const express = require('express'); // Framework principal para crear el servidor.
+const cors = require('cors'); // Middleware para permitir solicitudes desde otros dominios.
+const path = require('path'); // Módulo nativo de Node para manejar rutas de archivos/directorios.
+require('dotenv').config(); // Carga variables de entorno desde un archivo .env (por ejemplo, puerto, credenciales DB).
 
-const { testConnection } = require('./config/db'); //Verifica que la base de datos MySQL esté conectando correctamente.
+const { testConnection } = require('./config/db'); // Verifica que la base de datos MySQL esté conectando correctamente.
 
 // Importar rutas
-const responsableRoutes = require('./routes/responsableRoutes'); //Rutas relacionadas con responsables.
+const responsableRoutes = require('./routes/responsableRoutes'); // Rutas relacionadas con responsables.
+const animalRoutes = require('./routes/animalRoutes'); // ✅ NUEVO: rutas relacionadas con animales.
 
-const app = express(); //app es tu instancia principal del servidor Express.
-const PORT = process.env.PORT || 3000; //PORT usa una variable de entorno (.env), o por defecto el 3000.
+const app = express(); // app es tu instancia principal del servidor Express.
+const PORT = process.env.PORT || 3000; // PORT usa una variable de entorno (.env), o por defecto el 3000.
 
 // Middlewares
 app.use(cors());
-app.use(express.json()); //permite leer cuerpos JSON en peticiones POST/PUT.
-app.use(express.urlencoded({ extended: true })); //permite leer datos enviados desde formularios HTML.
-app.use(express.static('public')); //sirve archivos estáticos (HTML, CSS, JS, imágenes, etc.) desde la carpeta public/.
-app.use('/uploads', express.static('uploads')); //sirve los archivos subidos por el usuario desde /uploads.
+app.use(express.json()); // Permite leer cuerpos JSON en peticiones POST/PUT.
+app.use(express.urlencoded({ extended: true })); // Permite leer datos enviados desde formularios HTML.
+app.use(express.static('public')); // Sirve archivos estáticos (HTML, CSS, JS, imágenes, etc.) desde la carpeta public/.
+app.use('/uploads', express.static('uploads')); // Sirve los archivos subidos por el usuario desde /uploads.
 
 // Rutas de la API
-app.use('/api/responsables', responsableRoutes); //rutas para gestionar responsables.
+app.use('/api/responsables', responsableRoutes); // Rutas para gestionar responsables.
+app.use('/api/animales', animalRoutes); // ✅ NUEVO: rutas para gestionar animales.
 
 // Ruta de prueba
 app.get('/api/test', (req, res) => {
@@ -33,7 +35,7 @@ app.get('/api/test', (req, res) => {
 app.use((req, res) => {
     res.status(404).json({
         success: false,
-        message: 'Ruta no encontrada'
+        message: `Ruta no encontrada: ${req.originalUrl}` // 🔍 Muestra cuál fue la ruta no encontrada
     });
 });
 
@@ -48,11 +50,9 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar servidor
-//Probamos la conexión a la base de datos (await testConnection()).
 const startServer = async () => {
     try {
-        await testConnection();
-        //Si todo bien, inicia el servidor (app.listen).
+        await testConnection(); // ✅ Verifica conexión DB
         app.listen(PORT, () => {
             console.log('🚀 Servidor corriendo en:');
             console.log(`   http://localhost:${PORT}`);
@@ -63,20 +63,27 @@ const startServer = async () => {
             console.log('   POST   /api/responsables');
             console.log('   PUT    /api/responsables/:id');
             console.log('   DELETE /api/responsables/:id');
+            console.log('-------------------------------------------');
+            console.log('   GET    /api/animales');
+            console.log('   GET    /api/animales/:id');
+            console.log('   POST   /api/animales');
+            console.log('   PUT    /api/animales/:id');
+            console.log('   DELETE /api/animales/:id');
         });
     } catch (error) {
         console.error('❌ No se pudo iniciar el servidor:', error.message);
-        //Si hay error (por ejemplo, base de datos caída).
         process.exit(1); 
     }
 };
 
 startServer();
-//Captura promesas rechazadas que no fueron atrapadas con try/catch.
+
+// Captura promesas rechazadas no manejadas
 process.on('unhandledRejection', (error) => {
     console.error('❌ Error no manejado:', error);
     process.exit(1);
 });
+
 /* 
 Nota: 
     Esto evita que el servidor se quede en un estado inconsistente.
