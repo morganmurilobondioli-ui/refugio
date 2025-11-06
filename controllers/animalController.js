@@ -93,54 +93,75 @@ const animalController = {
         }
     },
 
-    //Actualizar un animal existente
     actualizarAnimal: async (req, res) => {
-        try {
-            const id = req.params.id;
-            const { nombre, raza, edad, peso, descripcion, estado, responsable_id } = req.body;
+      try {
+        const id = req.params.id;
+        const { nombre, raza, edad, peso, descripcion, estado, responsable_id } = req.body;
 
-            let foto_url = req.body.foto_url || null;
-            if (req.file) {
-                foto_url = path.join('/uploads/animales', req.file.filename);
-            }
-
-            const dataActualizada = {
-                nombre,
-                raza,
-                edad,
-                peso: peso || null,
-                descripcion: descripcion || null,
-                estado: estado || 'disponible',
-                responsable_id: responsable_id || null,
-                foto_url
-            };
-
-            const actualizado = await animalModel.update(id, dataActualizada);
-
-            if (!actualizado) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Animal no encontrado'
-                });
-            }
-
-            const animalActualizado = await animalModel.getById(id);
-
-            res.json({
-                success: true,
-                message: 'Animal actualizado exitosamente',
-                data: animalActualizado
-            });
-        } catch (error) {
-            console.error('Error al actualizar animal:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Error al actualizar animal',
-                error: error.message
-            });
+        //Buscar el animal existente
+        const animalExistente = await animalModel.getById(id);
+        if (!animalExistente) {
+          return res.status(404).json({
+            success: false,
+            message: 'Animal no encontrado'
+          });
         }
-    },
 
+        let foto_url = animalExistente.foto_url; // conservar la foto actual por defecto
+
+        //Si se subió una nueva foto...
+        if (req.file) {
+          //Eliminar la imagen anterior (si existe físicamente)
+          if (animalExistente.foto_url) {
+            const oldPath = path.join(process.cwd(), animalExistente.foto_url.replace(/\\/g, '/'));
+            if (fs.existsSync(oldPath)) {
+              fs.unlinkSync(oldPath);
+              console.log(`Imagen anterior eliminada: ${oldPath}`);
+            }
+          }
+
+          //Guardar la nueva ruta
+          foto_url = path.join('/uploads/animales', req.file.filename);
+        }
+
+        //Construir objeto actualizado
+        const dataActualizada = {
+          nombre: nombre || animalExistente.nombre,
+          raza: raza || animalExistente.raza,
+          edad: edad || animalExistente.edad,
+          peso: peso || animalExistente.peso,
+          descripcion: descripcion || animalExistente.descripcion,
+          estado: estado || animalExistente.estado,
+          responsable_id: responsable_id || animalExistente.responsable_id,
+          foto_url
+        };
+
+        const actualizado = await animalModel.update(id, dataActualizada);
+
+        if (!actualizado) {
+          return res.status(404).json({
+            success: false,
+            message: 'No se pudo actualizar el animal'
+          });
+        }
+
+        const animalActualizado = await animalModel.getById(id);
+
+        res.json({
+          success: true,
+          message: 'Animal actualizado exitosamente',
+          data: animalActualizado
+        });
+
+      } catch (error) {
+        console.error('Error al actualizar animal:', error);
+        res.status(500).json({
+          success: false,
+          message: 'Error al actualizar animal',
+          error: error.message
+        });
+      }
+    },
     //Eliminar animal
     eliminarAnimal: async (req, res) => {
         try {
