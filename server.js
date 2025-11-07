@@ -7,8 +7,9 @@ const { testConnection } = require('./config/db'); // Verifica que la base de da
 
 // Importar rutas
 const responsableRoutes = require('./routes/responsableRoutes'); // Rutas relacionadas con responsables.
-const animalRoutes = require('./routes/animalRoutes'); // ✅ NUEVO: rutas relacionadas con animales.
+const animalRoutes = require('./routes/animalRoutes'); 
 const duenioRoutes = require('./routes/duenioRoutes');
+const adopcionRoutes = require('./routes/adopcionRoutes');
 
 const app = express(); // app es tu instancia principal del servidor Express.
 const PORT = process.env.PORT || 3000; // PORT usa una variable de entorno (.env), o por defecto el 3000.
@@ -21,9 +22,11 @@ app.use(express.static('public')); // Sirve archivos estáticos (HTML, CSS, JS, 
 app.use('/uploads', express.static('uploads')); // Sirve los archivos subidos por el usuario desde /uploads.
 
 // Rutas de la API
-app.use('/api/responsables', responsableRoutes); // Rutas para gestionar responsables.
-app.use('/api/animales', animalRoutes); // ✅ NUEVO: rutas para gestionar animales.
+app.use('/api/responsables', responsableRoutes);
+app.use('/api/animales', animalRoutes);
 app.use('/api/duenios', duenioRoutes);
+app.use('/api/adopciones', adopcionRoutes);
+
 // Ruta de prueba
 app.get('/api/test', (req, res) => {
     res.json({ 

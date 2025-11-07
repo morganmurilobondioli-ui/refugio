@@ -4,7 +4,9 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "multer": "^2.0.2",
-    "mysql2": "^3.15.3"
+    "mysql2": "^3.15.3",
+    "node": "^25.1.0",
+    "pdfkit": "^0.17.2"
   },
   "name": "refugio-don-pepito",
   "version": "1.0.0",
