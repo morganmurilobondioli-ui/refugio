@@ -1,0 +1,107 @@
+/* refugio-custom.css */
+
+/* Colores personalizados para el refugio */
+:root {
+    --refugio-primary: #4CAF50;
+    --refugio-secondary: #2196F3;
+    --refugio-warning: #FF9800;
+    --refugio-danger: #F44336;
+    --refugio-success: #8BC34A;
+}
+
+/* Cards hover effect */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+
+/* Badges de estado */
+.badge {
+    padding: 5px 15px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Botones personalizados */
+.btn-base-color {
+    background-color: var(--refugio-primary) !important;
+    border-color: var(--refugio-primary) !important;
+}
+
+.btn-base-color:hover {
+    background-color: #45a049 !important;
+}
+
+/* Tabla responsiva */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #f5f5f5;
+}
+
+/* Animación de carga */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0,0,0,.1);
+    border-radius: 50%;
+    border-top-color: var(--refugio-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Mensaje de alerta personalizado */
+.alert-refugio {
+    border-left: 4px solid var(--refugio-primary);
+    border-radius: 4px;
+    padding: 15px 20px;
+    background-color: #f0f9ff;
+}
+
+/* Efectos hover para las cards */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2) !important;
+}
+
+/* Botones de vista activos */
+.btn-group .btn.active {
+    background-color: var(--refugio-primary) !important;
+    color: white !important;
+    border-color: var(--refugio-primary) !important;
+}
+
+/* Tabla responsive mejorada */
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+
+/* Loading suave */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+[data-anime] {
+    animation: fadeIn 0.6s ease-out;
+}

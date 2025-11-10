@@ -1,0 +1,293 @@
+﻿<!doctype html>
+<html class="no-js" lang="es">
+<head>
+    <title>Refugio Don Pepito - Dashboard</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="description" content="Sistema de gestión para refugio de animales">
+    
+    <!-- favicon -->
+    <link rel="shortcut icon" href="../public/images/favicon.png">
+    
+    <!-- styles -->
+    <link rel="stylesheet" href="css/vendors.min.css"/>
+    <link rel="stylesheet" href="css/icon.min.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/responsive.css"/>
+    <link rel="stylesheet" href="demos/elder-care/elder-care.css"/>
+    <link rel="stylesheet" href="css/refugio-custom.css"/>
+</head>
+<body data-mobile-nav-style="classic">
+    
+    <!-- start header -->
+    <header> 
+        <nav class="navbar navbar-expand-lg header-light bg-white sticky-top">
+            <div class="container-fluid">
+                <div class="col-auto me-auto">
+                    <a class="navbar-brand" href="index.html">
+                        <img src="images/refugio-logo.png" alt="Refugio Don Pepito" class="default-logo">
+                    </a>
+                </div>
+                <div class="col-auto menu-order">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-line"></span>
+                        <span class="navbar-toggler-line"></span>
+                        <span class="navbar-toggler-line"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav"> 
+                        <ul class="navbar-nav"> 
+                            <li class="nav-item"><a href="index.html" class="nav-link">Dashboard</a></li>
+                            <li class="nav-item"><a href="animales.html" class="nav-link">Animales</a></li>
+                            <li class="nav-item"><a href="refugio/responsable.html" class="nav-link">Responsables</a></li>
+                            <li class="nav-item"><a href="refugio/duenio.html" class="nav-link">Dueños</a></li>
+                            <li class="nav-item"><a href="refugio/adopcion.html" class="nav-link">Adopciones</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- end header -->
+
+    <!-- start dashboard section -->
+    <section class="pt-5 pb-5">
+        <div class="container">
+            <!-- Título -->
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <span class="text-base-color fw-600 mb-15px text-uppercase d-block">🐾 Refugio Don Pepito</span>
+                    <h1 class="fw-700 ls-minus-1px text-dark-gray alt-font">Panel de Control</h1>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="row row-cols-1 row-cols-lg-4 row-cols-sm-2 mb-5" id="estadisticas">
+                <!-- Total Animales -->
+                <div class="col mb-30px">
+                    <div class="bg-white border-radius-6px box-shadow-large p-40px text-center h-100">
+                        <div class="mb-15px">
+                            <i class="bi bi-heart-fill icon-extra-large text-base-color"></i>
+                        </div>
+                        <h2 class="fw-700 text-dark-gray mb-5px" id="total-animales">0</h2>
+                        <span class="fs-16 text-uppercase fw-600">Total Animales</span>
+                    </div>
+                </div>
+
+                <!-- Disponibles -->
+                <div class="col mb-30px">
+                    <div class="bg-white border-radius-6px box-shadow-large p-40px text-center h-100">
+                        <div class="mb-15px">
+                            <i class="bi bi-check-circle-fill icon-extra-large text-success"></i>
+                        </div>
+                        <h2 class="fw-700 text-success mb-5px" id="animales-disponibles">0</h2>
+                        <span class="fs-16 text-uppercase fw-600">Disponibles</span>
+                    </div>
+                </div>
+
+                <!-- Adoptados -->
+                <div class="col mb-30px">
+                    <div class="bg-white border-radius-6px box-shadow-large p-40px text-center h-100">
+                        <div class="mb-15px">
+                            <i class="bi bi-house-heart-fill icon-extra-large text-primary"></i>
+                        </div>
+                        <h2 class="fw-700 text-primary mb-5px" id="animales-adoptados">0</h2>
+                        <span class="fs-16 text-uppercase fw-600">Adoptados</span>
+                    </div>
+                </div>
+
+                <!-- En Proceso -->
+                <div class="col mb-30px">
+                    <div class="bg-white border-radius-6px box-shadow-large p-40px text-center h-100">
+                        <div class="mb-15px">
+                            <i class="bi bi-hourglass-split icon-extra-large text-warning"></i>
+                        </div>
+                        <h2 class="fw-700 text-warning mb-5px" id="animales-proceso">0</h2>
+                        <span class="fs-16 text-uppercase fw-600">En Proceso</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones Rápidas -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h3 class="fw-700 text-dark-gray mb-30px">Acciones Rápidas</h3>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-30px">
+                    <a href="refugio/crear.html" class="btn btn-large btn-base-color btn-rounded w-100 btn-box-shadow">
+                        <i class="bi bi-plus-circle me-10px"></i>Registrar Animal
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-30px">
+                    <a href="refugio/responsable.html" class="btn btn-large btn-dark-gray btn-rounded w-100 btn-box-shadow">
+                        <i class="bi bi-person-plus me-10px"></i>Nuevo Responsable
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-30px">
+                    <a href="refugio/duenio.html" class="btn btn-large btn-dark-gray btn-rounded w-100 btn-box-shadow">
+                        <i class="bi bi-people me-10px"></i>Nuevo Dueño
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-30px">
+                    <a href="refugio/adopcion.html" class="btn btn-large btn-success btn-rounded w-100 btn-box-shadow">
+                        <i class="bi bi-clipboard-check me-10px"></i>Nueva Adopción
+                    </a>
+                </div>
+            </div>
+
+            <!-- Últimos Animales Registrados -->
+            <div class="row">
+                <div class="col-12 mb-30px">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="fw-700 text-dark-gray mb-0">Últimos Animales Registrados</h3>
+                        <a href="refugio/animales.html" class="btn btn-link text-base-color fw-600">Ver todos →</a>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 row-cols-sm-2" id="ultimos-animales">
+                        <!-- Se llenarán dinámicamente con JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adopciones Recientes -->
+            <div class="row mt-5">
+                <div class="col-12 mb-30px">
+                    <h3 class="fw-700 text-dark-gray">Adopciones Recientes</h3>
+                </div>
+                <div class="col-12">
+                    <div class="bg-white border-radius-6px box-shadow-large p-40px">
+                        <table class="table table-hover" id="tabla-adopciones">
+                            <thead>
+                                <tr>
+                                    <th>Animal</th>
+                                    <th>Adoptante</th>
+                                    <th>Fecha</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Se llenará dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end dashboard section -->
+
+    <!-- start footer -->
+    <footer class="pt-40px pb-40px bg-dark-gray">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <span class="text-white">&copy; 2025 Refugio Don Pepito</span>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <span class="text-white">Sistema de Gestión de Adopciones</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end footer -->
+
+    <!-- scripts -->
+    <script src="js/jquery.js"></script>
+    <script src="js/vendors.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/app.refugio.js"></script>
+    <script>
+        // Cargar dashboard al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarEstadisticas();
+            cargarUltimosAnimales();
+            cargarAdopcionesRecientes();
+        });
+
+        // Cargar estadísticas
+        async function cargarEstadisticas() {
+            try {
+                const response = await fetch('/api/animales');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const animales = data.data;
+                    const disponibles = animales.filter(a => a.estado === 'disponible').length;
+                    const adoptados = animales.filter(a => a.estado === 'adoptado').length;
+                    const proceso = animales.filter(a => a.estado === 'en_proceso').length;
+                    
+                    document.getElementById('total-animales').textContent = animales.length;
+                    document.getElementById('animales-disponibles').textContent = disponibles;
+                    document.getElementById('animales-adoptados').textContent = adoptados;
+                    document.getElementById('animales-proceso').textContent = proceso;
+                }
+            } catch (error) {
+                console.error('Error al cargar estadísticas:', error);
+            }
+        }
+
+        // Cargar últimos animales
+        async function cargarUltimosAnimales() {
+            try {
+                const response = await fetch('/api/animales');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const animales = data.data.slice(0, 4); // Últimos 4
+                    const container = document.getElementById('ultimos-animales');
+                    
+                    container.innerHTML = animales.map(animal => `
+                        <div class="col mb-30px">
+                            <div class="card border-0 border-radius-6px box-shadow-large overflow-hidden">
+                                <img src="${animal.foto_url || 'images/placeholder-animal.jpg'}" 
+                                     class="card-img-top" 
+                                     alt="${animal.nombre}"
+                                     style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="fw-700 text-dark-gray mb-5px">${animal.nombre}</h5>
+                                    <p class="mb-10px">${animal.raza}</p>
+                                    <span class="badge bg-${animal.estado === 'disponible' ? 'success' : 'primary'}">
+                                        ${animal.estado}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error al cargar animales:', error);
+            }
+        }
+
+        // Cargar adopciones recientes
+        async function cargarAdopcionesRecientes() {
+            try {
+                const response = await fetch('/api/adopciones');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const adopciones = data.data.slice(0, 5); // Últimas 5
+                    const tbody = document.querySelector('#tabla-adopciones tbody');
+                    
+                    tbody.innerHTML = adopciones.map(adopcion => `
+                        <tr>
+                            <td>${adopcion.animal_nombre}</td>
+                            <td>${adopcion.duenio_nombre} ${adopcion.duenio_apellido}</td>
+                            <td>${new Date(adopcion.fecha_adopcion).toLocaleDateString('es-PE')}</td>
+                            <td>
+                                <a href="/api/adopciones/${adopcion.id}/descargar" 
+                                   class="btn btn-small btn-base-color btn-rounded">
+                                    <i class="bi bi-download"></i> PDF
+                                </a>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error al cargar adopciones:', error);
+            }
+        }
+    </script>
+</body>
+</html>
