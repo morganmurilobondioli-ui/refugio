@@ -1,0 +1,558 @@
+<!doctype html>
+<html class="no-js" lang="es">
+<head>
+    <title>Solicitud de Adopción - Refugio Don Pepito</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    
+    <!-- styles -->
+    <link rel="stylesheet" href="../css/vendors.min.css"/>
+    <link rel="stylesheet" href="../css/icon.min.css"/>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/responsive.css"/>
+    <link rel="stylesheet" href="../css/cliente.css"/>
+</head>
+<body>
+    <!-- Page title -->
+    <section class="py-4 bg-gradient-blue-transparent-first">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="fw-700 text-dark-gray display-5 mb-2">
+                        <i class="bi bi-clipboard-heart text-base-color me-10px"></i>
+                        Solicitud de Adopción
+                    </h1>
+                    <p class="fs-18 text-muted">Estás a un paso de cambiar una vida</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de adopción -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    
+                    <div class="row">
+                        <!-- Columna izquierda: Resumen del animal -->
+                        <div class="col-lg-4 mb-4 mb-lg-0">
+                            <div class="position-sticky" style="top: 100px;">
+                                <div class="bg-white border-radius-10px box-shadow-large p-30px">
+                                    <h5 class="fw-700 text-dark-gray mb-20px">Vas a adoptar a:</h5>
+                                    
+                                    <div id="animalResumen" class="text-center">
+                                        <!-- Loading -->
+                                        <div class="spinner-border text-primary mb-3" role="status"></div>
+                                        <p class="text-muted">Cargando...</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Información importante -->
+                                <div class="alert alert-info border-radius-8px mt-3">
+                                    <i class="bi bi-info-circle me-10px"></i>
+                                    <small><strong>Nota:</strong> Te contactaremos para coordinar la visita y entrega.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna derecha: Formulario -->
+                        <div class="col-lg-8">
+                            <div class="bg-white border-radius-10px box-shadow-large p-40px">
+                                
+                                <h4 class="fw-700 text-dark-gray mb-30px">
+                                    Tus Datos Personales
+                                </h4>
+
+                                <form id="formAdopcion">
+                                    <input type="hidden" id="animal_id" name="animal_id">
+                                    
+                                    <!-- Nombre -->
+                                    <div class="row mb-25px">
+                                        <div class="col-md-6 mb-3 mb-md-0">
+                                            <label class="form-label fw-600 text-dark-gray mb-10px">
+                                                Nombre <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   id="nombre" 
+                                                   name="nombre" 
+                                                   class="form-control h-55px border-radius-6px"
+                                                   placeholder="Tu nombre"
+                                                   required>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-600 text-dark-gray mb-10px">
+                                                Apellido <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   id="apellido" 
+                                                   name="apellido" 
+                                                   class="form-control h-55px border-radius-6px"
+                                                   placeholder="Tu apellido"
+                                                   required>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Contacto -->
+                                    <div class="row mb-25px">
+                                        <div class="col-md-6 mb-3 mb-md-0">
+                                            <label class="form-label fw-600 text-dark-gray mb-10px">
+                                                Teléfono <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="tel" 
+                                                   id="telefono" 
+                                                   name="telefono" 
+                                                   class="form-control h-55px border-radius-6px"
+                                                   placeholder="987654321"
+                                                   required>
+                                            <div class="form-text">Para coordinar la entrega</div>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-600 text-dark-gray mb-10px">
+                                                Email <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="email" 
+                                                   id="email" 
+                                                   name="email" 
+                                                   class="form-control h-55px border-radius-6px"
+                                                   placeholder="tu@email.com"
+                                                   required>
+                                            <div class="form-text">Te enviaremos la confirmación</div>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Fecha de adopción -->
+                                    <div class="mb-25px">
+                                        <label class="form-label fw-600 text-dark-gray mb-10px">
+                                            Fecha para recogerlo <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" 
+                                               id="fecha_adopcion" 
+                                               name="fecha_adopcion" 
+                                               class="form-control h-55px border-radius-6px"
+                                               required>
+                                        <div class="form-text">Fecha en la que puedes venir al refugio</div>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    
+                                    <!-- Términos y condiciones -->
+                                    <div class="mb-30px">
+                                        <div style="display: flex; align-items: center;"> 
+                                            
+                                            <input type="checkbox" id="terminos" name="terminos" required style="margin-right: 5px;">
+                                            
+                                            <label for="terminos" style="line-height: 1.2; margin-bottom: 0;"> 
+                                                Acepto los 
+                                                <a href="#" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#modalTerminos" 
+                                                class="text-base-color fw-600"
+                                                onclick="event.stopPropagation()"
+                                                style="line-height: 1.2;"> términos y condiciones
+                                                </a> 
+                                                de adopción
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="invalid-feedback d-block" style="margin-left: 20px;"> 
+                                            </div>
+                                    </div>
+                                    <!-- Botones -->
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a href="index.html" class="btn btn-large btn-outline-dark btn-rounded">
+                                            <i class="bi bi-arrow-left me-5px"></i>Cancelar
+                                        </a>
+                                        
+                                        <button type="submit" 
+                                                id="btnEnviar" 
+                                                class="btn btn-extra-large btn-base-color btn-rounded btn-box-shadow">
+                                            <i class="bi bi-send-fill me-10px"></i>
+                                            Enviar Solicitud
+                                        </button>
+                                    </div>
+                                    
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de éxito -->
+    <div class="modal fade" id="modalExito" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-radius-10px">
+                <div class="modal-body p-50px text-center">
+                    <!-- El contenido se llenará dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de términos -->
+    <div class="modal fade" id="modalTerminos" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-radius-10px">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-700 text-dark-gray">Términos y Condiciones de Adopción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-40px">
+                    <h6 class="fw-700 text-dark-gray mb-15px">Compromiso del Adoptante:</h6>
+                    <ol class="mb-30px">
+                        <li class="mb-10px">Brindar los cuidados necesarios al animal (alimentación, agua, refugio).</li>
+                        <li class="mb-10px">Proporcionar atención veterinaria cuando sea necesario.</li>
+                        <li class="mb-10px">No maltratar, abandonar o ceder el animal a terceros.</li>
+                        <li class="mb-10px">Mantener las vacunas y desparasitaciones al día.</li>
+                        <li class="mb-10px">Notificar al refugio en caso de pérdida o enfermedad grave.</li>
+                        <li class="mb-10px">El refugio se reserva el derecho de realizar visitas de seguimiento.</li>
+                    </ol>
+                    
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-10px"></i>
+                        <strong>Importante:</strong> El incumplimiento de estos términos puede resultar en la revocación de la adopción.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-medium btn-outline-dark btn-rounded" data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                    <button type="button" class="btn btn-medium btn-base-color btn-rounded" data-bs-dismiss="modal">
+                        Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4 bg-dark-gray">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                    <span class="text-white">&copy; 2025 Refugio Don Pepito</span>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <span class="text-white">Con amor para nuestros amigos de cuatro patas 🐾</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- scripts -->
+    <script src="../js/jquery.js"></script>
+    <script src="../js/vendors.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/app.refugio.js"></script>
+    <script>
+        // ==============================================
+        // FORMULARIO DE ADOPCIÓN
+        // ==============================================
+        
+        let animalId = null;
+        let animalData = null;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Obtener ID desde URL
+            const urlParams = new URLSearchParams(window.location.search);
+            animalId = urlParams.get('animal_id');
+            
+            if (!animalId) {
+                showAlert('No se especificó el animal', 'error');
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return;
+            }
+            
+            // Establecer fecha mínima (hoy) y máxima (30 días adelante)
+            const hoy = new Date();
+            const maxFecha = new Date();
+            maxFecha.setDate(maxFecha.getDate() + 30);
+            
+            document.getElementById('fecha_adopcion').min = hoy.toISOString().split('T')[0];
+            document.getElementById('fecha_adopcion').max = maxFecha.toISOString().split('T')[0];
+            
+            cargarAnimal();
+            initFormulario();
+        });
+        
+        /**
+         * Cargar información del animal
+         */
+        async function cargarAnimal() {
+            const resumenContainer = document.getElementById('animalResumen');
+            
+            try {
+                const data = await fetchAPI(`/api/animales/${animalId}`);
+                
+                if (data.success) {
+                    animalData = data.data;
+                    
+                    // Verificar disponibilidad
+                    if (animalData.estado !== 'disponible') {
+                        showAlert('Este animal ya no está disponible', 'warning');
+                        setTimeout(() => window.location.href = 'index.html', 3000);
+                        return;
+                    }
+                    
+                    // Llenar ID en formulario
+                    document.getElementById('animal_id').value = animalData.id;
+                    
+                    // Mostrar resumen
+                    resumenContainer.innerHTML = `
+                        <img src="${getImageUrl(animalData.foto_url)}" 
+                             class="w-100 border-radius-8px mb-20px" 
+                             alt="${animalData.nombre}"
+                             onerror="this.src='../images/placeholder-animal.jpg'">
+                        <h4 class="fw-700 text-dark-gray mb-15px">${animalData.nombre}</h4>
+                        <p class="mb-10px"><strong>Raza:</strong> ${animalData.raza}</p>
+                        <p class="mb-10px"><strong>Edad:</strong> ${animalData.edad} años</p>
+                        <p class="mb-0"><strong>Peso:</strong> ${animalData.peso} kg</p>
+                    `;
+                    
+                } else {
+                    throw new Error('Animal no encontrado');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                resumenContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Error al cargar el animal
+                    </div>
+                `;
+            }
+        }
+        
+        /**
+         * Inicializar formulario
+         */
+        function initFormulario() {
+            const form = document.getElementById('formAdopcion');
+            form.addEventListener('submit', handleSubmit);
+        }
+        
+        /**
+         * Manejar envío del formulario
+         */
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const btnEnviar = document.getElementById('btnEnviar');
+            
+            // Limpiar errores
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            
+            // Obtener datos
+            const nombre = document.getElementById('nombre').value.trim();
+            const apellido = document.getElementById('apellido').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const fecha_adopcion = document.getElementById('fecha_adopcion').value;
+            const terminos = document.getElementById('terminos').checked;
+            
+            // Validaciones
+            if (!nombre || !apellido || !telefono || !email || !fecha_adopcion) {
+                showAlert('Por favor completa todos los campos', 'warning');
+                return;
+            }
+            
+            if (!terminos) {
+                showAlert('Debes aceptar los términos y condiciones', 'warning');
+                document.getElementById('terminos').classList.add('is-invalid');
+                return;
+            }
+            
+            // Validar email
+            if (!isValidEmail(email)) {
+                showFieldError(document.getElementById('email'), 'Email inválido');
+                showAlert('Por favor ingresa un email válido', 'warning');
+                return;
+            }
+            
+            // Validar teléfono (9 dígitos)
+            if (telefono.length < 9) {
+                showFieldError(document.getElementById('telefono'), 'Teléfono inválido');
+                showAlert('El teléfono debe tener al menos 9 dígitos', 'warning');
+                return;
+            }
+            
+            try {
+                setButtonLoading(btnEnviar, true, 'Procesando...');
+                
+                let duenioId = null;
+                
+                // Paso 1: Buscar si el dueño ya existe por email
+                try {
+                    const dueniosResponse = await fetchAPI('/api/duenios');
+                    
+                    if (dueniosResponse.success) {
+                        // Buscar dueño por email
+                        const duenioExistente = dueniosResponse.data.find(
+                            d => d.email && d.email.toLowerCase() === email.toLowerCase()
+                        );
+                        
+                        if (duenioExistente) {
+                            // Dueño ya existe, usar su ID
+                            duenioId = duenioExistente.id;
+                            console.log('✅ Dueño existente encontrado:', duenioId);
+                        }
+                    }
+                } catch (error) {
+                    console.log('Error al buscar dueño:', error);
+                }
+                
+                // Paso 2: Si no existe, registrar nuevo dueño
+                if (!duenioId) {
+                    const datosDuenio = { nombre, apellido, telefono, email };
+                    
+                    const duenioResponse = await fetchAPI('/api/duenios', {
+                        method: 'POST',
+                        body: JSON.stringify(datosDuenio)
+                    });
+                    
+                    if (!duenioResponse.success) {
+                        throw new Error(duenioResponse.message || 'Error al registrar tus datos');
+                    }
+                    
+                    duenioId = duenioResponse.data.id;
+                    console.log('✅ Nuevo dueño registrado:', duenioId);
+                }
+                
+                // Paso 3: Registrar la adopción
+                const datosAdopcion = {
+                    animal_id: animalId,
+                    duenio_id: duenioId,
+                    fecha_adopcion: fecha_adopcion
+                };
+                
+                const adopcionResponse = await fetchAPI('/api/adopciones', {
+                    method: 'POST',
+                    body: JSON.stringify(datosAdopcion)
+                });
+                
+                if (!adopcionResponse.success) {
+                    throw new Error(adopcionResponse.message || 'Error al registrar la adopción');
+                }
+                
+                // Obtener datos de la adopción para el modal
+                const adopcionData = adopcionResponse.data;
+
+                // ✅ IMPORTANTE: Guardar el ID de la adopción
+                const adopcionId = adopcionData.id;
+
+                // Actualizar modal de éxito con botón de descarga
+                const modalExitoBody = document.querySelector('#modalExito .modal-body');
+                modalExitoBody.innerHTML = `
+                    <div class="mb-30px">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 80px;"></i>
+                    </div>
+                    <h3 class="fw-700 text-dark-gray mb-20px">¡Solicitud Enviada!</h3>
+                    <p class="fs-18 text-muted mb-30px">
+                        Hemos recibido tu solicitud de adopción de <strong>${animalData.nombre}</strong>.<br>
+                        Te contactaremos pronto para coordinar la entrega el <strong>${new Date(fecha_adopcion).toLocaleDateString('es-PE')}</strong>.
+                    </p>
+                    <div class="alert alert-success border-radius-6px mb-30px">
+                        <i class="bi bi-file-pdf text-danger fs-3 me-10px"></i>
+                        <strong>Documento de compromiso generado</strong><br>
+                        <small>Descárgalo y tráelo firmado cuando vengas al refugio.</small>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button onclick="descargarPDF(${adopcionId})" 
+                                class="btn btn-large btn-success btn-rounded">
+                            <i class="bi bi-download me-10px"></i>
+                            Descargar Compromiso PDF
+                        </button>
+                        <button onclick="window.location.href='index.html'" 
+                                class="btn btn-large btn-base-color btn-rounded">
+                            <i class="bi bi-house-door me-10px"></i>
+                            Volver al Inicio
+                        </button>
+                        <button onclick="window.location.href='index.html'" 
+                                class="btn btn-medium btn-outline-dark btn-rounded">
+                            Ver Más Animales
+                        </button>
+                    </div>
+                `;
+
+                // Mostrar modal de éxito
+                const modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                modalExito.show();
+
+                // Limpiar formulario
+                form.reset();
+                                
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert(error.message, 'error');
+            } finally {
+                setButtonLoading(btnEnviar, false, '<i class="bi bi-send-fill me-10px"></i>Enviar Solicitud');
+            }
+        }
+
+        // Forzar que el checkbox sea clickeable
+        document.addEventListener('DOMContentLoaded', () => {
+        const checkbox = document.getElementById('terminos');
+        const label = document.querySelector('label[for="terminos"]');
+    
+            // Asegurar que el label active el checkbox
+            label.addEventListener('click', function(e) {
+                // Si no es el link, alternar checkbox
+                if (e.target.tagName !== 'A') {
+                    e.preventDefault();
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+            
+            // Validar checkbox en tiempo real
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+
+
+        /**
+         * Descargar PDF del compromiso
+         */
+        async function descargarPDF(adopcionId) {
+            try {
+                const url = `/api/adopciones/${adopcionId}/descargar`;
+                
+                // Mostrar loading
+                showAlert('Descargando documento...', 'info', 2000);
+                
+                // Crear link temporal y hacer click
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Compromiso-Adopcion-${adopcionId}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Mensaje de éxito
+                setTimeout(() => {
+                    showAlert('Documento descargado correctamente', 'success', 3000);
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error al descargar PDF:', error);
+                showAlert('Error al descargar el documento', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

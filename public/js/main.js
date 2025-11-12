@@ -3343,7 +3343,7 @@
     /* ===================================
      Stack animataion
      ====================================== */
-
+/*
     stackAnimation();
     var stackLastScroll = 0;
     function stackAnimation() {
@@ -3387,7 +3387,7 @@
     $(window).scroll(function () {
         stackAnimation();
     });
-
+*/
     /* ===================================
      Image tilt 3d effect using atropos
      ====================================== */

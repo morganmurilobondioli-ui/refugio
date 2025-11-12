@@ -1,0 +1,417 @@
+<!doctype html>
+<html class="no-js" lang="es">
+<head>
+    <title>Registrar Animal - Refugio Don Pepito</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    
+    <!-- favicon -->
+    <link rel="shortcut icon" href="../public/images/favicon.png">
+    
+    <!-- styles -->
+    <link rel="stylesheet" href="css/vendors.min.css"/>
+    <link rel="stylesheet" href="css/icon.min.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/responsive.css"/>
+ 
+    <link rel="stylesheet" href="css/refugio-custom.css"/>
+</head>
+<body data-mobile-nav-style="classic">
+    
+    <!-- start header -->
+    <header> 
+        <nav class="navbar navbar-expand-lg header-light bg-white sticky-top box-shadow-small">
+            <div class="container-fluid">
+                <div class="col-auto me-auto">
+                    <a class="navbar-brand" href="index.html">
+                        <img src="images/refugio-logo.png" alt="Refugio Don Pepito" class="default-logo" style="max-height: 50px;">
+                    </a>
+                </div>
+                <div class="col-auto menu-order">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-line"></span>
+                        <span class="navbar-toggler-line"></span>
+                        <span class="navbar-toggler-line"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav"> 
+                        <ul class="navbar-nav"> 
+                            <li class="nav-item"><a href="index.html" class="nav-link">Dashboard</a></li>
+                            <li class="nav-item"><a href="animales.html" class="nav-link active">Animales</a></li>
+                            <li class="nav-item"><a href="responsable.html" class="nav-link">Responsables</a></li>
+                            <li class="nav-item"><a href="duenio.html" class="nav-link">Dueños</a></li>
+                            <li class="nav-item"><a href="adopcion.html" class="nav-link">Adopciones</a></li>
+                            <li class="nav-item"><a href="crear.html" class="nav-link">Registrar</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- end header -->
+
+    <!-- start page title -->
+    <section class="page-title-big-typography bg-gradient-blue-transparent-first ipad-top-space-margin">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-12 text-center">
+                    <h1 class="alt-font text-dark-gray fw-700 ls-minus-2px mb-20px">
+                        <i class="bi bi-plus-circle text-base-color me-10px"></i>
+                        Registrar Nuevo Animal
+                    </h1>
+                    <p class="fs-19 mb-0">Completa la información del animal</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end page title -->
+
+    <!-- start form section -->
+    <section class="pt-5 pb-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    
+                    <!-- Formulario -->
+                    <div class="bg-white border-radius-8px box-shadow-large p-50px lg-p-40px md-p-30px">
+                        <form id="formCrearAnimal" enctype="multipart/form-data">
+                            
+                            <!-- Información básica -->
+                            <div class="mb-50px">
+                                <h4 class="fw-700 text-dark-gray mb-30px border-bottom pb-20px">
+                                    <i class="bi bi-info-circle text-base-color me-10px"></i>
+                                    Información Básica
+                                </h4>
+                                
+                                <div class="row">
+                                    <!-- Nombre -->
+                                    <div class="col-md-6 mb-25px">
+                                        <label class="form-label fw-600 text-dark-gray mb-10px">
+                                            Nombre <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               id="nombre" 
+                                               name="nombre" 
+                                               class="form-control h-55px border-radius-6px"
+                                               placeholder="Ej: Max"
+                                               required>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    
+                                    <!-- Raza -->
+                                    <div class="col-md-6 mb-25px">
+                                        <label class="form-label fw-600 text-dark-gray mb-10px">
+                                            Raza <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               id="raza" 
+                                               name="raza" 
+                                               class="form-control h-55px border-radius-6px"
+                                               placeholder="Ej: Labrador"
+                                               required>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    
+                                    <!-- Edad -->
+                                    <div class="col-md-6 mb-25px">
+                                        <label class="form-label fw-600 text-dark-gray mb-10px">
+                                            Edad (años) <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="number" 
+                                               id="edad" 
+                                               name="edad" 
+                                               class="form-control h-55px border-radius-6px"
+                                               placeholder="Ej: 3"
+                                               min="0"
+                                               max="30"
+                                               required>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    
+                                    <!-- Peso -->
+                                    <div class="col-md-6 mb-25px">
+                                        <label class="form-label fw-600 text-dark-gray mb-10px">
+                                            Peso (kg)
+                                        </label>
+                                        <input type="number" 
+                                               id="peso" 
+                                               name="peso" 
+                                               class="form-control h-55px border-radius-6px"
+                                               placeholder="Ej: 25.5"
+                                               step="0.1"
+                                               min="0">
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    
+                                    <!-- Descripción -->
+                                    <div class="col-12 mb-25px">
+                                        <label class="form-label fw-600 text-dark-gray mb-10px">
+                                            Descripción
+                                        </label>
+                                        <textarea id="descripcion" 
+                                                  name="descripcion" 
+                                                  class="form-control border-radius-6px"
+                                                  rows="4"
+                                                  maxlength="5000"
+                                                  placeholder="Describe características especiales del animal..."></textarea>
+                                        <div class="form-text">
+                                            <span id="caracteresRestantes">1000</span> caracteres restantes
+                                        </div>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Foto del animal -->
+                            <div class="mb-50px">
+                                <h4 class="fw-700 text-dark-gray mb-30px border-bottom pb-20px">
+                                    <i class="bi bi-image text-base-color me-10px"></i>
+                                    Fotografía
+                                </h4>
+                                
+                                <div class="row align-items-center">
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <label class="form-label fw-600 text-dark-gray mb-10px">
+                                            Subir foto del animal
+                                        </label>
+                                        <input type="file" 
+                                               id="foto" 
+                                               name="foto" 
+                                               class="form-control h-55px border-radius-6px"
+                                               accept="image/jpeg,image/jpg,image/png,image/gif">
+                                        <div class="form-text">
+                                            Formatos: JPG, PNG, GIF. Máximo 5MB
+                                        </div>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 text-center">
+                                        <div class="border border-2 border-dashed border-radius-8px p-20px">
+                                            <img id="previewFoto" 
+                                                 src="https://placehold.co/100x100?text=Sin+Foto" 
+                                                 alt="Preview" 
+                                                 class="img-fluid border-radius-6px"
+                                                 style="max-height: 200px; display: block; margin: 0 auto;">
+                                            <p class="text-muted mt-2 mb-0 small">Vista previa</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Responsable -->
+                            <div class="mb-50px">
+                                <h4 class="fw-700 text-dark-gray mb-30px border-bottom pb-20px">
+                                    <i class="bi bi-person text-base-color me-10px"></i>
+                                    Responsable
+                                </h4>
+                                
+                                <div class="row">
+                                    <div class="col-md-8 mb-3 mb-md-0">
+                                        <label class="form-label fw-600 text-dark-gray mb-10px">
+                                            Persona que trajo al animal (opcional)
+                                        </label>
+                                        <select id="responsable_id" 
+                                                name="responsable_id" 
+                                                class="form-select h-55px border-radius-6px">
+                                            <option value="">-- Seleccionar responsable --</option>
+                                            <!-- Se llenará dinámicamente -->
+                                        </select>
+                                        <div class="form-text">
+                                            Si no existe, puedes <a href="responsable.html" class="text-base-color fw-600">registrar uno nuevo aquí</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4 d-flex align-items-end">
+                                        <button type="button" 
+                                                id="btnRecargarResponsables" 
+                                                class="btn btn-medium btn-outline-dark btn-rounded w-100 h-55px">
+                                            <i class="bi bi-arrow-clockwise me-5px"></i>Recargar lista
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Botones de acción -->
+                            <div class="d-flex justify-content-between align-items-center pt-30px border-top">
+                                <a href="animales.html" class="btn btn-large btn-outline-dark btn-rounded">
+                                    <i class="bi bi-arrow-left me-5px"></i>Cancelar
+                                </a>
+                                
+                                <button type="submit" 
+                                        id="btnGuardar" 
+                                        class="btn btn-large btn-base-color btn-rounded btn-box-shadow">
+                                    <i class="bi bi-save me-5px"></i>Guardar Animal
+                                </button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end form section -->
+
+    <!-- start footer -->
+    <footer class="pt-40px pb-40px bg-dark-gray">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <span class="text-white">&copy; 2025 Refugio Don Pepito</span>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <span class="text-white">Sistema de Gestión de Adopciones</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end footer -->
+
+    <!-- scripts -->
+    <script src="../public/js/jquery.js"></script>
+    <script src="../public/js/vendors.min.js"></script>
+    <script src="../public/js/main.js"></script>
+    <script src="../public/js/app.refugio.js"></script>
+    <script>
+        // ==============================================
+        // CREAR ANIMAL
+        // ==============================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarResponsables();
+            initFormHandlers();
+        });
+        
+        /**
+         * Inicializar manejadores del formulario
+         */
+        function initFormHandlers() {
+            const form = document.getElementById('formCrearAnimal');
+            const fotoInput = document.getElementById('foto');
+            const descripcionInput = document.getElementById('descripcion');
+            
+            // Preview de foto
+            fotoInput.addEventListener('change', function() {
+                previewImage(this, document.getElementById('previewFoto'));
+            });
+            
+            // Contador de caracteres
+            descripcionInput.addEventListener('input', function() {
+                const restantes = 1000 - this.value.length;
+                document.getElementById('caracteresRestantes').textContent = restantes;
+            });
+            
+            // Recargar responsables
+            document.getElementById('btnRecargarResponsables').addEventListener('click', cargarResponsables);
+            
+            // Submit del formulario
+            form.addEventListener('submit', handleSubmit);
+        }
+        
+        /**
+         * Cargar lista de responsables
+         */
+        async function cargarResponsables() {
+            const select = document.getElementById('responsable_id');
+            const btnRecargar = document.getElementById('btnRecargarResponsables');
+            
+            try {
+                setButtonLoading(btnRecargar, true);
+                
+                const data = await fetchAPI('/api/responsables');
+                
+                if (data.success) {
+                    const responsables = data.data;
+                    
+                    select.innerHTML = '<option value="">-- Seleccionar responsable --</option>' +
+                        responsables.map(r => 
+                            `<option value="${r.id}">${r.nombre} ${r.apellido}</option>`
+                        ).join('');
+                    
+                    if (responsables.length === 0) {
+                        select.innerHTML += '<option value="" disabled>No hay responsables registrados</option>';
+                    }
+                }
+                
+            } catch (error) {
+                showAlert('Error al cargar responsables', 'error');
+            } finally {
+                setButtonLoading(btnRecargar, false, '<i class="bi bi-arrow-clockwise me-5px"></i>Recargar lista');
+            }
+        }
+        
+        /**
+         * Manejar submit del formulario
+         */
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const btnGuardar = document.getElementById('btnGuardar');
+            
+            // Limpiar errores previos
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            
+            // Validar campos requeridos
+            const nombre = document.getElementById('nombre').value.trim();
+            const raza = document.getElementById('raza').value.trim();
+            const edad = document.getElementById('edad').value;
+            
+            if (!nombre || !raza || !edad) {
+                showAlert('Por favor completa todos los campos obligatorios', 'warning');
+                
+                if (!nombre) showFieldError(document.getElementById('nombre'), 'El nombre es obligatorio');
+                if (!raza) showFieldError(document.getElementById('raza'), 'La raza es obligatoria');
+                if (!edad) showFieldError(document.getElementById('edad'), 'La edad es obligatoria');
+                
+                return;
+            }
+            
+            // Validar edad
+            if (edad < 0 || edad > 30) {
+                showFieldError(document.getElementById('edad'), 'Edad inválida (0-30 años)');
+                showAlert('La edad debe estar entre 0 y 30 años', 'warning');
+                return;
+            }
+            
+            // Validar foto si existe
+            const fotoInput = document.getElementById('foto');
+            if (fotoInput.files.length > 0) {
+                const validation = validateImageFile(fotoInput.files[0]);
+                if (!validation.valid) {
+                    showFieldError(fotoInput, validation.message);
+                    showAlert(validation.message, 'warning');
+                    return;
+                }
+            }
+            
+            try {
+                setButtonLoading(btnGuardar, true, 'Guardando...');
+                
+                // Crear FormData
+                const formData = new FormData(form);
+                
+                // Enviar a la API
+                const data = await fetchFormData('/api/animales', formData);
+                
+                if (data.success) {
+                    showAlert('¡Animal registrado exitosamente!', 'success');
+                    
+                    // Esperar 1.5 segundos y redirigir
+                    setTimeout(() => {
+                        window.location.href = 'animales.html';
+                    }, 1500);
+                } else {
+                    throw new Error(data.message || 'Error al guardar');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert(error.message, 'error');
+                setButtonLoading(btnGuardar, false, '<i class="bi bi-save me-5px"></i>Guardar Animal');
+            }
+        }
+    </script>
+</body>
+</html>

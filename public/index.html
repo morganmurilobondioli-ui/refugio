@@ -15,10 +15,10 @@
     <link rel="stylesheet" href="css/icon.min.css"/>
     <link rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="css/responsive.css"/>
-    <link rel="stylesheet" href="demos/elder-care/elder-care.css"/>
+   
     <link rel="stylesheet" href="css/refugio-custom.css"/>
 </head>
-<body data-mobile-nav-style="classic">
+<body data-mobile-nav-style="classic"> 
     
     <!-- start header -->
     <header> 
@@ -26,7 +26,7 @@
             <div class="container-fluid">
                 <div class="col-auto me-auto">
                     <a class="navbar-brand" href="index.html">
-                        <img src="images/refugio-logo.png" alt="Refugio Don Pepito" class="default-logo">
+                        <img src="../public/images/refugio-logo.png" alt="Refugio Don Pepito" class="default-logo">
                     </a>
                 </div>
                 <div class="col-auto menu-order">
@@ -39,9 +39,10 @@
                         <ul class="navbar-nav"> 
                             <li class="nav-item"><a href="index.html" class="nav-link">Dashboard</a></li>
                             <li class="nav-item"><a href="animales.html" class="nav-link">Animales</a></li>
-                            <li class="nav-item"><a href="refugio/responsable.html" class="nav-link">Responsables</a></li>
-                            <li class="nav-item"><a href="refugio/duenio.html" class="nav-link">Dueños</a></li>
-                            <li class="nav-item"><a href="refugio/adopcion.html" class="nav-link">Adopciones</a></li>
+                            <li class="nav-item"><a href="responsable.html" class="nav-link">Responsables</a></li>
+                            <li class="nav-item"><a href="duenio.html" class="nav-link">Dueños</a></li>
+                            <li class="nav-item"><a href="adopcion.html" class="nav-link">Adopciones</a></li>
+                            <li class="nav-item"><a href="crear.html" class="nav-link">Registrar</a></li>
                         </ul>
                     </div>
                 </div>
@@ -56,7 +57,7 @@
             <!-- Título -->
             <div class="row mb-5">
                 <div class="col-12 text-center">
-                    <span class="text-base-color fw-600 mb-15px text-uppercase d-block">🐾 Refugio Don Pepito</span>
+                    <span class="text-base-color fw-600 mb-15px text-uppercase d-block"></span>
                     <h1 class="fw-700 ls-minus-1px text-dark-gray alt-font">Panel de Control</h1>
                 </div>
             </div>
@@ -114,22 +115,22 @@
                     <h3 class="fw-700 text-dark-gray mb-30px">Acciones Rápidas</h3>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-30px">
-                    <a href="refugio/crear.html" class="btn btn-large btn-base-color btn-rounded w-100 btn-box-shadow">
+                    <a href="crear.html" class="btn btn-large btn-base-color btn-rounded w-100 btn-box-shadow">
                         <i class="bi bi-plus-circle me-10px"></i>Registrar Animal
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-30px">
-                    <a href="refugio/responsable.html" class="btn btn-large btn-dark-gray btn-rounded w-100 btn-box-shadow">
+                    <a href="responsable.html" class="btn btn-large btn-dark-gray btn-rounded w-100 btn-box-shadow">
                         <i class="bi bi-person-plus me-10px"></i>Nuevo Responsable
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-30px">
-                    <a href="refugio/duenio.html" class="btn btn-large btn-dark-gray btn-rounded w-100 btn-box-shadow">
+                    <a href="duenio.html" class="btn btn-large btn-dark-gray btn-rounded w-100 btn-box-shadow">
                         <i class="bi bi-people me-10px"></i>Nuevo Dueño
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-30px">
-                    <a href="refugio/adopcion.html" class="btn btn-large btn-success btn-rounded w-100 btn-box-shadow">
+                    <a href="adopcion.html" class="btn btn-large btn-success btn-rounded w-100 btn-box-shadow">
                         <i class="bi bi-clipboard-check me-10px"></i>Nueva Adopción
                     </a>
                 </div>
@@ -140,7 +141,7 @@
                 <div class="col-12 mb-30px">
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="fw-700 text-dark-gray mb-0">Últimos Animales Registrados</h3>
-                        <a href="refugio/animales.html" class="btn btn-link text-base-color fw-600">Ver todos →</a>
+                        <a href="animales.html" class="btn btn-link text-base-color fw-600">Ver todos →</a>
                     </div>
                 </div>
                 <div class="col-12">
@@ -199,95 +200,111 @@
     <script src="js/app.refugio.js"></script>
     <script>
         // Cargar dashboard al iniciar
-        document.addEventListener('DOMContentLoaded', () => {
-            cargarEstadisticas();
-            cargarUltimosAnimales();
-            cargarAdopcionesRecientes();
-        });
+document.addEventListener('DOMContentLoaded', () => {
+    cargarEstadisticas();
+    cargarUltimosAnimales();
+    cargarAdopcionesRecientes();
+});
 
-        // Cargar estadísticas
-        async function cargarEstadisticas() {
-            try {
-                const response = await fetch('/api/animales');
-                const data = await response.json();
-                
-                if (data.success) {
-                    const animales = data.data;
-                    const disponibles = animales.filter(a => a.estado === 'disponible').length;
-                    const adoptados = animales.filter(a => a.estado === 'adoptado').length;
-                    const proceso = animales.filter(a => a.estado === 'en_proceso').length;
-                    
-                    document.getElementById('total-animales').textContent = animales.length;
-                    document.getElementById('animales-disponibles').textContent = disponibles;
-                    document.getElementById('animales-adoptados').textContent = adoptados;
-                    document.getElementById('animales-proceso').textContent = proceso;
-                }
-            } catch (error) {
-                console.error('Error al cargar estadísticas:', error);
-            }
+// Cargar estadísticas
+async function cargarEstadisticas() {
+    try {
+        // 1. fetchAPI ya devuelve el JSON parseado (data).
+        const data = await fetchAPI('/api/animales'); 
+        
+        // 2. ELIMINADA la línea: const data = await response.json();
+        
+        if (data.success) {
+            const animales = data.data;
+            const disponibles = animales.filter(a => a.estado === 'disponible').length;
+            const adoptados = animales.filter(a => a.estado === 'adoptado').length;
+            const proceso = animales.filter(a => a.estado === 'en_proceso').length;
+            
+            document.getElementById('total-animales').textContent = animales.length;
+            document.getElementById('animales-disponibles').textContent = disponibles;
+            document.getElementById('animales-adoptados').textContent = adoptados;
+            document.getElementById('animales-proceso').textContent = proceso;
         }
+    } catch (error) {
+        console.error('Error al cargar estadísticas:', error);
+    }
+}
 
-        // Cargar últimos animales
-        async function cargarUltimosAnimales() {
-            try {
-                const response = await fetch('/api/animales');
-                const data = await response.json();
-                
-                if (data.success) {
-                    const animales = data.data.slice(0, 4); // Últimos 4
-                    const container = document.getElementById('ultimos-animales');
-                    
-                    container.innerHTML = animales.map(animal => `
-                        <div class="col mb-30px">
-                            <div class="card border-0 border-radius-6px box-shadow-large overflow-hidden">
-                                <img src="${animal.foto_url || 'images/placeholder-animal.jpg'}" 
-                                     class="card-img-top" 
-                                     alt="${animal.nombre}"
-                                     style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="fw-700 text-dark-gray mb-5px">${animal.nombre}</h5>
-                                    <p class="mb-10px">${animal.raza}</p>
-                                    <span class="badge bg-${animal.estado === 'disponible' ? 'success' : 'primary'}">
-                                        ${animal.estado}
-                                    </span>
-                                </div>
-                            </div>
+// Cargar últimos animales
+async function cargarUltimosAnimales() {
+    try {
+        // 1. fetchAPI ya devuelve el JSON parseado (data).
+        const data = await fetchAPI('/api/animales'); 
+        
+        // 2. ELIMINADA la línea: const data = await response.json();
+        
+        // El resto del código que usa 'data' es correcto
+        if (data.success) {
+            const animales = data.data.slice(0, 4); // Últimos 4
+            const container = document.getElementById('ultimos-animales');
+            
+            // Usar la función getEstadoBadge de app.refugio.js (asegúrate que esté definida y exportada/global)
+            container.innerHTML = animales.map(animal => `
+                <div class="col mb-30px">
+                    <div class="card border-0 border-radius-6px box-shadow-large overflow-hidden">
+                        <img src="${animal.foto_url || 'https://placehold.co/100x100?text=Sin+Foto'}" 
+                             class="card-img-top" 
+                             alt="${animal.nombre}"
+                             style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="fw-700 text-dark-gray mb-5px">${animal.nombre}</h5>
+                            <p class="mb-10px">${animal.raza}</p>
+                            <span class="badge bg-${animal.estado === 'disponible' ? 'success' : 'primary'}">
+                                ${animal.estado}
+                            </span>
                         </div>
-                    `).join('');
-                }
-            } catch (error) {
-                console.error('Error al cargar animales:', error);
-            }
+                    </div>
+                </div>
+            `).join('');
         }
+    } catch (error) {
+        console.error('Error al cargar animales:', error);
+    }
+}
 
-        // Cargar adopciones recientes
-        async function cargarAdopcionesRecientes() {
-            try {
-                const response = await fetch('/api/adopciones');
-                const data = await response.json();
+// Cargar adopciones recientes
+async function cargarAdopcionesRecientes() {
+    try {
+        // 1. fetchAPI ya devuelve el JSON parseado (data).
+        const data = await fetchAPI('/api/adopciones'); 
+        
+        // 2. ELIMINADA la línea: const data = await response.json();
+        
+        if (data.success) {
+            const adopciones = data.data.slice(0, 5); // Últimas 5
+            const tbody = document.querySelector('#tabla-adopciones tbody');
+            
+            tbody.innerHTML = adopciones.map(adopcion => {
                 
-                if (data.success) {
-                    const adopciones = data.data.slice(0, 5); // Últimas 5
-                    const tbody = document.querySelector('#tabla-adopciones tbody');
-                    
-                    tbody.innerHTML = adopciones.map(adopcion => `
-                        <tr>
-                            <td>${adopcion.animal_nombre}</td>
-                            <td>${adopcion.duenio_nombre} ${adopcion.duenio_apellido}</td>
-                            <td>${new Date(adopcion.fecha_adopcion).toLocaleDateString('es-PE')}</td>
-                            <td>
-                                <a href="/api/adopciones/${adopcion.id}/descargar" 
-                                   class="btn btn-small btn-base-color btn-rounded">
-                                    <i class="bi bi-download"></i> PDF
-                                </a>
-                            </td>
-                        </tr>
-                    `).join('');
-                }
-            } catch (error) {
-                console.error('Error al cargar adopciones:', error);
-            }
+                // 🛑 CORRECCIÓN CLAVE: Definir la URL completa para el backend (puerto 3000)
+                // Se asume que tu API está en http://localhost:3000
+                const downloadUrl = `http://localhost:3000/api/adopciones/${adopcion.id}/descargar`; 
+                
+                return `
+                    <tr>
+                        <td>${adopcion.animal_nombre}</td>
+                        <td>${adopcion.duenio_nombre} ${adopcion.duenio_apellido}</td>
+                        <td>${new Date(adopcion.fecha_adopcion).toLocaleDateString('es-PE')}</td>
+                        <td>
+                            <a href="#" 
+                               onclick="downloadPDF('${downloadUrl}', 'Adopcion_${adopcion.id}.pdf'); return false;"
+                               class="btn btn-small btn-base-color btn-rounded">
+                                 <i class="bi bi-download"></i> PDF
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
+    } catch (error) {
+        console.error('Error al cargar adopciones:', error);
+    }
+}
     </script>
 </body>
 </html>

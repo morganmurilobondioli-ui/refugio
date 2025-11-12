@@ -1,0 +1,207 @@
+<!doctype html>
+<html class="no-js" lang="es">
+<head>
+    <title>Adopta un Amigo - Refugio Don Pepito</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    
+    <!-- styles -->
+    <link rel="stylesheet" href="../css/vendors.min.css"/>
+    <link rel="stylesheet" href="../css/icon.min.css"/>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/responsive.css"/>
+    <link rel="stylesheet" href="../css/cliente.css"/>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-publico py-5 bg-gradient-blue-transparent-first">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
+                    <span class="badge bg-base-color text-white mb-3 px-4 py-2">
+                        <i class="bi bi-heart-fill me-2"></i>Adopta, no compres
+                    </span>
+                    <h1 class="display-3 fw-700 text-dark-gray mb-3">
+                        Encuentra a tu<br>Mejor Amigo
+                    </h1>
+                    <p class="fs-19 text-dark-gray mb-4 w-80 lg-w-100">
+                        Cientos de animales esperan un hogar lleno de amor. 
+                        Dale una segunda oportunidad y cambia una vida para siempre.
+                    </p>
+                    <button onclick="document.getElementById('galeria').scrollIntoView({behavior: 'smooth'})" 
+                            class="btn btn-extra-large btn-base-color btn-rounded btn-box-shadow">
+                        <i class="bi bi-heart me-10px"></i>Ver Animales Disponibles
+                    </button>
+                </div>
+                <div class="col-lg-5 text-center">
+                    <img src="../images/hero-adopcion.png" alt="Adopción" class="img-fluid" style="max-height: 400px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estadísticas rápidas -->
+    <section class="py-4 bg-white box-shadow-small">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-4 col-md-4 mb-3 mb-md-0">
+                    <h2 class="fw-700 text-base-color mb-0" id="totalDisponibles">0</h2>
+                    <p class="mb-0 text-muted">Animales Disponibles</p>
+                </div>
+                <div class="col-lg-4 col-md-4 mb-3 mb-md-0">
+                    <h2 class="fw-700 text-success mb-0" id="totalAdoptados">0</h2>
+                    <p class="mb-0 text-muted">Adopciones Realizadas</p>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <h2 class="fw-700 text-primary mb-0">5+</h2>
+                    <p class="mb-0 text-muted">Años de Experiencia</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filtros y búsqueda -->
+    <section id="galeria" class="pt-5 pb-0">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12 text-center mb-4">
+                    <h2 class="fw-700 text-dark-gray display-5 mb-2">Nuestros Animales</h2>
+                    <p class="fs-18 text-muted">Todos esperan encontrar un hogar amoroso</p>
+                </div>
+            </div>
+            
+            <!-- Barra de búsqueda -->
+            <div class="row mb-4">
+                <div class="col-lg-8 mx-auto">
+                    <div class="position-relative">
+                        <input type="text" 
+                               id="searchInput" 
+                               class="form-control form-control-lg ps-50px h-65px border-radius-10px box-shadow-large" 
+                               placeholder="Busca por nombre o raza... Ej: Max, Labrador">
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-20px text-muted fs-20"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería de animales -->
+    <section class="pt-3 pb-5">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2" id="animalesContainer">
+                <!-- Se llenará dinámicamente -->
+            </div>
+            
+            <!-- Mensaje cuando no hay resultados -->
+            <div id="noResultados" class="text-center py-5" style="display: none;">
+                <i class="bi bi-search fs-1 text-muted mb-3"></i>
+                <h4 class="text-dark-gray mb-2">No encontramos animales</h4>
+                <p class="text-muted">Intenta con otra búsqueda</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección: Cómo adoptar -->
+    <section class="py-5 bg-very-light-gray">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <h2 class="fw-700 text-dark-gray display-6 mb-2">¿Cómo Adoptar?</h2>
+                    <p class="fs-18 text-muted">Es muy fácil, sigue estos pasos</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4 text-center">
+                    <div class="bg-white p-40px border-radius-10px box-shadow-medium h-100">
+                        <div class="mb-3">
+                            <span class="badge bg-base-color rounded-circle p-3 fs-3">1</span>
+                        </div>
+                        <h5 class="fw-700 text-dark-gray mb-2">Busca</h5>
+                        <p class="mb-0 text-muted">Explora nuestra galería y encuentra a tu compañero ideal</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 text-center">
+                    <div class="bg-white p-40px border-radius-10px box-shadow-medium h-100">
+                        <div class="mb-3">
+                            <span class="badge bg-base-color rounded-circle p-3 fs-3">2</span>
+                        </div>
+                        <h5 class="fw-700 text-dark-gray mb-2">Conoce</h5>
+                        <p class="mb-0 text-muted">Ve la ficha completa del animal con fotos y descripción</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 text-center">
+                    <div class="bg-white p-40px border-radius-10px box-shadow-medium h-100">
+                        <div class="mb-3">
+                            <span class="badge bg-base-color rounded-circle p-3 fs-3">3</span>
+                        </div>
+                        <h5 class="fw-700 text-dark-gray mb-2">Solicita</h5>
+                        <p class="mb-0 text-muted">Llena el formulario con tus datos personales</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 text-center">
+                    <div class="bg-white p-40px border-radius-10px box-shadow-medium h-100">
+                        <div class="mb-3">
+                            <span class="badge bg-base-color rounded-circle p-3 fs-3">4</span>
+                        </div>
+                        <h5 class="fw-700 text-dark-gray mb-2">Adopta</h5>
+                        <p class="mb-0 text-muted">Firma el compromiso y llévate a tu nuevo amigo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto" class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="fw-700 text-dark-gray display-6 mb-3">¿Tienes dudas?</h2>
+                    <p class="fs-18 text-muted mb-4">Estamos aquí para ayudarte en todo el proceso de adopción</p>
+                    <div class="mb-3">
+                        <i class="bi bi-telephone-fill text-base-color fs-4 me-3"></i>
+                        <span class="fs-18 fw-600">1 800 222 000</span>
+                    </div>
+                    <div class="mb-3">
+                        <i class="bi bi-envelope-fill text-base-color fs-4 me-3"></i>
+                        <span class="fs-18 fw-600">info@refugiodonpepito.com</span>
+                    </div>
+                    <div>
+                        <i class="bi bi-geo-alt-fill text-base-color fs-4 me-3"></i>
+                        <span class="fs-18 fw-600">Av. Principal 123, Lima, Perú</span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bg-base-color p-50px border-radius-10px text-white">
+                        <h4 class="fw-700 mb-3">Horario de Atención</h4>
+                        <p class="mb-2"><strong>Lunes a Viernes:</strong> 9:00 AM - 6:00 PM</p>
+                        <p class="mb-2"><strong>Sábados:</strong> 9:00 AM - 2:00 PM</p>
+                        <p class="mb-0"><strong>Domingos:</strong> Cerrado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 bg-dark-gray">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                    <span class="text-white">&copy; 2025 Refugio Don Pepito</span>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <span class="text-white">Con amor para nuestros amigos de cuatro patas 🐾</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- scripts -->
+    <script src="../js/jquery.js"></script>
+    <script src="../js/vendors.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/app.refugio.js"></script>
+    <script src="../js/cliente.js"></script>
+</body>
+</html>

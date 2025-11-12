@@ -27,15 +27,36 @@ const RefugioAPI = {
  * @param {object} options - Opciones de fetch
  * @returns {Promise<object>}
  */
+// ===============================================
+// UTILIDADES DE FETCH
+// ===============================================
+
+const API_BASE = 'http://localhost:3000';
+
+/**
+ * Wrapper de fetch con manejo de errores
+ * @param {string} url - URL del endpoint
+ * @param {object} options - Opciones de fetch
+ * @returns {Promise<object>}
+ */
 async function fetchAPI(url, options = {}) {
+    const fullUrl = `${API_BASE}${url}`;
+    console.log('🔍 Llamando a:', fullUrl);
+
     try {
-        const response = await fetch(url, {
+        const response = await fetch(fullUrl, {
             headers: {
                 'Content-Type': 'application/json',
                 ...options.headers
             },
             ...options
         });
+
+        // Evitar intentar parsear HTML por error
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error(`Respuesta no válida del servidor (${response.status})`);
+        }
 
         const data = await response.json();
 
@@ -58,14 +79,17 @@ async function fetchAPI(url, options = {}) {
  * @returns {Promise<object>}
  */
 async function fetchFormData(url, formData, method = 'POST') {
+    const fullUrl = `${API_BASE}${url}`;
+    console.log('📤 Enviando datos a:', fullUrl);
+
     try {
-        const response = await fetch(url, {
-            method: method,
+        const response = await fetch(fullUrl, {
+            method,
             body: formData
-            // NO incluir Content-Type, el navegador lo maneja automáticamente
         });
 
-        const data = await response.json();
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : {};
 
         if (!response.ok) {
             throw new Error(data.message || 'Error en la petición');
@@ -77,6 +101,7 @@ async function fetchFormData(url, formData, method = 'POST') {
         throw error;
     }
 }
+
 
 // ==============================================
 // MENSAJES Y ALERTAS
@@ -313,7 +338,8 @@ function isValidEmail(email) {
  * @returns {boolean}
  */
 function isValidPhone(phone) {
-    const regex = /^[9]\d{8}$/; // Celular peruano: 9 seguido de 8 dígitos
+    // Celular peruano: 9 seguido de 8 dígitos
+    const regex = /^[9]\d{8}$/; 
     return regex.test(phone.replace(/\s/g, ''));
 }
 
@@ -336,6 +362,74 @@ function capitalize(str) {
 function truncateText(text, length = 100) {
     if (!text || text.length <= length) return text;
     return text.substring(0, length) + '...';
+}
+
+
+// ==============================================
+// 🐾 NUEVAS FUNCIONES DE UTILIDAD PARA EL REFUGIO 🐾
+// ==============================================
+
+/**
+ * Obtener URL de imagen o placeholder si no existe.
+ * Importante: Usar una URL absoluta o un placeholder seguro.
+ * @param {string} imageUrl - URL de la imagen del animal
+ * @returns {string}
+ */
+function getImageUrl(imageUrl) {
+    if (imageUrl && imageUrl.startsWith('http')) {
+        return imageUrl;
+    }
+    // Asume que las imágenes del refugio están bajo una ruta específica
+    if (imageUrl) {
+        // Ajusta esta ruta si tus imágenes locales están en otro lugar
+        return `../public/images/animales/${imageUrl}`; 
+    }
+    // Placeholder por defecto (URL externa segura)
+    return 'https://placehold.co/100x100?text=Sin+Foto'; 
+}
+
+
+/**
+ * Calcular la edad en años a partir de una fecha de nacimiento (o año)
+ * @param {string|Date|number} dob - Fecha de nacimiento (string o Date) o solo el año.
+ * @returns {number|string} Edad en años o 'N/A' si es inválido.
+ */
+function calculateAge(dob) {
+    if (!dob) return 'N/A';
+    
+    let birthDate;
+
+    if (typeof dob === 'number' && dob > 1900 && dob <= new Date().getFullYear()) {
+        // Si solo se proporciona el año (ej: 2020)
+        birthDate = new Date(dob, 0, 1); 
+    } else {
+        // Si se proporciona la fecha completa (string o Date)
+        birthDate = new Date(dob);
+    }
+    
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    
+    // Ajustar si aún no ha pasado el cumpleaños de este año
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    const dayDifference = today.getDate() - birthDate.getDate();
+
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+        age--;
+    }
+    
+    // Manejar el caso de fechas inválidas
+    return isNaN(age) || age < 0 ? 'N/A' : age;
+}
+
+/**
+ * Formatear el peso del animal con unidades y precisión.
+ * @param {number} weight - Peso del animal.
+ * @returns {string} Peso formateado (ej: 15.5 kg).
+ */
+function formatWeight(weight) {
+    if (typeof weight !== 'number' || isNaN(weight)) return 'N/A';
+    return `${weight.toFixed(2)} kg`;
 }
 
 // ==============================================
@@ -391,7 +485,8 @@ function validateImageFile(file, maxSizeMB = 5) {
  * @returns {string}
  */
 function getImageUrl(imageUrl) {
-    return imageUrl || '/images/placeholder-animal.jpg';
+    // 🛑 DEBE USAR EL ENLACE EXTERNO O LA RUTA COMPLETA CORREGIDA
+    return imageUrl || 'https://placehold.co/100x100?text=Sin+Foto'; 
 }
 
 // ==============================================
@@ -660,13 +755,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     console.log('🐾 Refugio Don Pepito - Sistema cargado correctamente');
+
+    const fechaInput = document.getElementById('fecha_adopcion');
+    if (fechaInput) {
+        // Obtener la fecha de hoy, forzando el formato YYYY-MM-DD sin problemas de zona horaria local.
+        function getTodayString() {
+            const today = new Date();
+            const year = today.getFullYear();
+            // Los meses en JS son de 0 a 11, por eso sumamos 1
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // ESTO ES CRUCIAL: Establece la fecha mínima seleccionable al día de hoy
+        const todayString = getTodayString();
+        fechaInput.setAttribute('min', todayString); 
+
+        // Verifica en la consola: console.log('Fecha mínima establecida a:', fechaInput.getAttribute('min')); 
+        // Debe mostrar la fecha de hoy (ej: 2025-11-11)
+    }
+
 });
 
 // ==============================================
 // EXPORTAR (si usas módulos ES6)
 // ==============================================
-
-// Si quieres usar módulos, descomenta esto:
 /*
 export {
     fetchAPI,

@@ -1,0 +1,190 @@
+/* Estilos específicos para la vista pública */
+
+/* Hero público */
+.hero-publico {
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+}
+
+/* Cards hover effect */
+.card-hover-publico {
+    transition: all 0.4s ease;
+}
+
+.card-hover-publico:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important;
+}
+
+.card-hover-publico:hover img {
+    transform: scale(1.1);
+}
+
+/* Navbar público */
+.navbar-publico .nav-link {
+    font-weight: 600;
+    font-size: 16px;
+    padding: 10px 20px !important;
+}
+
+.navbar-publico .nav-link:hover {
+    color: var(--refugio-primary) !important;
+}
+
+/* Botones grandes */
+.btn-extra-large {
+    padding: 18px 40px;
+    font-size: 18px;
+}
+
+/* Badges personalizados */
+.badge {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+[data-anime] {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .hero-publico {
+        min-height: auto;
+        padding: 40px 0;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Estilos adicionales para cliente */
+
+/* Breadcrumb personalizado */
+.breadcrumb-item a {
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+/* Botón de impresión */
+@media print {
+    header, footer, .btn, .breadcrumb {
+        display: none !important;
+    }
+    
+    .box-shadow-large,
+    .box-shadow-extra-large {
+        box-shadow: none !important;
+    }
+}
+
+/* Resumen del animal en formulario */
+#animalResumen img {
+    transition: transform 0.3s ease;
+}
+
+#animalResumen:hover img {
+    transform: scale(1.05);
+}
+
+/* Formulario mejorado */
+.form-check-input:checked {
+    background-color: var(--refugio-primary);
+    border-color: var(--refugio-primary);
+}
+
+/* Modal de éxito */
+.modal-content {
+    border: none;
+}
+
+/* Términos y condiciones */
+#modalTerminos ol li {
+    padding-left: 10px;
+    line-height: 1.8;
+}
+
+/* Sticky sidebar */
+@media (min-width: 992px) {
+    .position-sticky {
+        top: 100px !important;
+    }
+}
+
+/* Animación de entrada suave */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+section {
+    animation: slideInUp 0.6s ease-out;
+}
+
+/* Cards de consejos */
+.bg-gradient-blue-transparent-first .d-flex:hover {
+    transform: translateX(5px);
+    transition: transform 0.3s ease;
+}
+
+/* Estilos para checkbox de términos */
+.form-check {
+    padding-left: 0;
+}
+
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-top: 0.15em;
+    cursor: pointer;
+    border: 2px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.form-check-input:hover {
+    border-color: var(--refugio-primary);
+}
+
+.form-check-input:checked {
+    background-color: var(--refugio-primary);
+    border-color: var(--refugio-primary);
+}
+
+.form-check-input:focus {
+    border-color: var(--refugio-primary);
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.form-check-label {
+    cursor: pointer;
+    user-select: none;
+    margin-left: 10px;
+}
+
+/* Evitar que el link de términos active el checkbox */
+.form-check-label a {
+    pointer-events: auto;
+}
