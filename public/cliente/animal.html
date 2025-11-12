@@ -1,0 +1,344 @@
+<!doctype html>
+<html class="no-js" lang="es">
+<head>
+    <title>Detalle del Animal - Refugio Don Pepito</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    
+    <!-- styles -->
+    <link rel="stylesheet" href="../css/vendors.min.css"/>
+    <link rel="stylesheet" href="../css/icon.min.css"/>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/responsive.css"/>
+    <link rel="stylesheet" href="../css/cliente.css"/>
+</head>
+<body>
+    <!-- Breadcrumb -->
+    <section class="py-3 bg-very-light-gray">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="index.html" class="text-base-color">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" id="breadcrumbNombre">Cargando...</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Loading inicial -->
+    <section id="loadingSection" class="py-5">
+        <div class="container">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="text-muted">Cargando información del animal...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detalle del animal -->
+    <section id="detalleSection" class="py-5" style="display: none;">
+        <div class="container">
+            
+            <!-- Botón volver -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <a href="index.html" class="btn btn-medium btn-outline-dark btn-rounded">
+                        <i class="bi bi-arrow-left me-5px"></i>Volver a la galería
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Columna izquierda: Foto -->
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="position-sticky" style="top: 100px;">
+                        <!-- Foto principal -->
+                        <div class="border-radius-10px overflow-hidden box-shadow-extra-large mb-3">
+                            <img id="animalFoto" 
+                                 src="" 
+                                 alt="" 
+                                 class="w-100" 
+                                 style="max-height: 500px; object-fit: cover;">
+                        </div>
+                        
+                        <!-- Badge de disponibilidad -->
+                        <div class="text-center">
+                            <span class="badge bg-success px-4 py-3 fs-16">
+                                <i class="bi bi-heart-fill me-10px"></i>
+                                Disponible para Adopción
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna derecha: Información -->
+                <div class="col-lg-6">
+                    <div class="bg-white border-radius-10px box-shadow-large p-40px">
+                        
+                        <!-- Nombre -->
+                        <h1 class="display-4 fw-700 text-dark-gray mb-20px" id="animalNombre">
+                            <!-- Se llenará dinámicamente -->
+                        </h1>
+
+                        <!-- Información básica -->
+                        <div class="mb-40px">
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="p-20px bg-very-light-gray border-radius-8px">
+                                        <i class="bi bi-tag-fill text-base-color fs-3 mb-2"></i>
+                                        <p class="mb-5px text-muted small">Raza</p>
+                                        <h5 class="fw-700 text-dark-gray mb-0" id="animalRaza"></h5>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-20px bg-very-light-gray border-radius-8px">
+                                        <i class="bi bi-calendar-fill text-base-color fs-3 mb-2"></i>
+                                        <p class="mb-5px text-muted small">Edad</p>
+                                        <h5 class="fw-700 text-dark-gray mb-0" id="animalEdad"></h5>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="p-20px bg-very-light-gray border-radius-8px">
+                                        <i class="bi bi-speedometer text-base-color fs-3 mb-2"></i>
+                                        <p class="mb-5px text-muted small">Peso</p>
+                                        <h5 class="fw-700 text-dark-gray mb-0" id="animalPeso"></h5>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-20px bg-very-light-gray border-radius-8px">
+                                        <i class="bi bi-clock-fill text-base-color fs-3 mb-2"></i>
+                                        <p class="mb-5px text-muted small">En el refugio</p>
+                                        <h5 class="fw-700 text-dark-gray mb-0" id="animalTiempo"></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-40px" id="descripcionContainer" style="display: none;">
+                            <h4 class="fw-700 text-dark-gray mb-20px">
+                                <i class="bi bi-info-circle text-base-color me-10px"></i>
+                                Sobre mí
+                            </h4>
+                            <p class="fs-18 text-dark-gray lh-base" id="animalDescripcion"></p>
+                        </div>
+
+                        <!-- Responsable -->
+                        <div class="mb-40px" id="responsableContainer" style="display: none;">
+                            <h5 class="fw-700 text-dark-gray mb-15px">Llegó al refugio por:</h5>
+                            <p class="text-muted mb-0" id="responsableInfo"></p>
+                        </div>
+
+                        <!-- Botón de adopción -->
+                        <div class="d-grid gap-2">
+                            <a href="#" 
+                               id="btnAdoptar" 
+                               class="btn btn-extra-large btn-base-color btn-rounded btn-box-shadow">
+                                <i class="bi bi-heart-fill me-10px"></i>
+                                ¡Quiero Adoptarlo!
+                            </a>
+                            <button onclick="window.print()" 
+                                    class="btn btn-large btn-outline-dark btn-rounded">
+                                <i class="bi bi-printer me-10px"></i>
+                                Imprimir información
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consejos de adopción -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="bg-gradient-blue-transparent-first border-radius-10px p-40px">
+                        <h3 class="fw-700 text-dark-gray mb-30px text-center">
+                            <i class="bi bi-lightbulb-fill text-warning me-10px"></i>
+                            Consejos antes de Adoptar
+                        </h3>
+                        <div class="row">
+                            <div class="col-lg-4 mb-3 mb-lg-0">
+                                <div class="d-flex">
+                                    <i class="bi bi-check-circle-fill text-success fs-3 me-15px"></i>
+                                    <div>
+                                        <h6 class="fw-700 text-dark-gray mb-10px">Compromiso a largo plazo</h6>
+                                        <p class="mb-0 text-muted">Un animal es una responsabilidad de muchos años. Asegúrate de estar preparado.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3 mb-lg-0">
+                                <div class="d-flex">
+                                    <i class="bi bi-check-circle-fill text-success fs-3 me-15px"></i>
+                                    <div>
+                                        <h6 class="fw-700 text-dark-gray mb-10px">Espacio adecuado</h6>
+                                        <p class="mb-0 text-muted">Verifica que tu hogar tenga el espacio necesario para el animal.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="d-flex">
+                                    <i class="bi bi-check-circle-fill text-success fs-3 me-15px"></i>
+                                    <div>
+                                        <h6 class="fw-700 text-dark-gray mb-10px">Gastos veterinarios</h6>
+                                        <p class="mb-0 text-muted">Considera los costos de alimentación, vacunas y atención médica.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 bg-dark-gray">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                    <span class="text-white">&copy; 2025 Refugio Don Pepito</span>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <span class="text-white">Con amor para nuestros amigos de cuatro patas 🐾</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- scripts -->
+    <script src="../js/jquery.js"></script>
+    <script src="../js/vendors.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/app.refugio.js"></script>
+    <script>
+        // ==============================================
+        // DETALLE DEL ANIMAL
+        // ==============================================
+        
+        let animalId = null;
+        let animalData = null;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Obtener ID desde URL
+            const urlParams = new URLSearchParams(window.location.search);
+            animalId = urlParams.get('id');
+            
+            if (!animalId) {
+                showAlert('No se especificó el animal', 'error');
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return;
+            }
+            
+            cargarAnimal();
+        });
+        
+        /**
+         * Cargar información del animal
+         */
+        async function cargarAnimal() {
+            const loadingSection = document.getElementById('loadingSection');
+            const detalleSection = document.getElementById('detalleSection');
+            
+            try {
+                const data = await fetchAPI(`/api/animales/${animalId}`);
+                
+                if (data.success) {
+                    animalData = data.data;
+                    
+                    // Verificar que esté disponible
+                    if (animalData.estado !== 'disponible') {
+                        showAlert('Este animal ya no está disponible para adopción', 'warning');
+                        setTimeout(() => window.location.href = 'index.html', 3000);
+                        return;
+                    }
+                    
+                    // Llenar información
+                    mostrarDetalle();
+                    
+                    // Mostrar sección
+                    loadingSection.style.display = 'none';
+                    detalleSection.style.display = 'block';
+                    
+                } else {
+                    throw new Error('Animal no encontrado');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loadingSection.innerHTML = `
+                    <div class="container">
+                        <div class="text-center py-5">
+                            <i class="bi bi-exclamation-triangle fs-1 text-danger mb-3"></i>
+                            <h4 class="text-dark-gray mb-3">Animal no encontrado</h4>
+                            <a href="index.html" class="btn btn-primary">Volver a la galería</a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        /**
+         * Mostrar detalle del animal
+         */
+        function mostrarDetalle() {
+            // Foto
+            document.getElementById('animalFoto').src = getImageUrl(animalData.foto_url);
+            document.getElementById('animalFoto').alt = animalData.nombre;
+            
+            // Breadcrumb
+            document.getElementById('breadcrumbNombre').textContent = animalData.nombre;
+            
+            // Nombre
+            document.getElementById('animalNombre').textContent = animalData.nombre;
+            
+            // Información básica
+            document.getElementById('animalRaza').textContent = animalData.raza;
+            document.getElementById('animalEdad').textContent = `${animalData.edad} ${animalData.edad === 1 ? 'año' : 'años'}`;
+            document.getElementById('animalPeso').textContent = `${animalData.peso} kg`;
+            
+            // Calcular tiempo en refugio
+            const fechaRegistro = new Date(animalData.fecha_registro);
+            const hoy = new Date();
+            const diffTime = Math.abs(hoy - fechaRegistro);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            let tiempoTexto = '';
+            if (diffDays < 30) {
+                tiempoTexto = `${diffDays} ${diffDays === 1 ? 'día' : 'días'}`;
+            } else if (diffDays < 365) {
+                const meses = Math.floor(diffDays / 30);
+                tiempoTexto = `${meses} ${meses === 1 ? 'mes' : 'meses'}`;
+            } else {
+                const años = Math.floor(diffDays / 365);
+                tiempoTexto = `${años} ${años === 1 ? 'año' : 'años'}`;
+            }
+            document.getElementById('animalTiempo').textContent = tiempoTexto;
+            
+            // Descripción
+            if (animalData.descripcion) {
+                document.getElementById('animalDescripcion').textContent = animalData.descripcion;
+                document.getElementById('descripcionContainer').style.display = 'block';
+            }
+            
+            // Responsable
+            if (animalData.responsable_nombre) {
+                document.getElementById('responsableInfo').textContent = 
+                    `${animalData.responsable_nombre} ${animalData.responsable_apellido || ''}`;
+                document.getElementById('responsableContainer').style.display = 'block';
+            }
+            
+            // Botón adoptar
+            document.getElementById('btnAdoptar').href = `adoptar.html?animal_id=${animalData.id}`;
+            
+            // Actualizar título de página
+            document.title = `${animalData.nombre} - Refugio Don Pepito`;
+        }
+    </script>
+</body>
+</html>

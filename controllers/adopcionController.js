@@ -1,6 +1,6 @@
-// controllers/adopcionController.js
 const adopcionModel = require('../models/adopcionModel');
-const { generarCompromisoPDF } = require('../utils/generarCompromisoPDF'); // ✅ Ruta correcta
+const { generarCompromisoPDF } = require('../utils/generarCompromisoPDF');
+const { generarCitaPDF } = require('../utils/generarCitaPDF'); 
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -65,7 +65,7 @@ const adopcionController = {
                 });
             }
 
-            // Validar fecha (código anterior se mantiene igual)
+            // Validar fecha
             const fechaAdopcion = new Date(fecha_adopcion);
             const hoy = new Date();
             fechaAdopcion.setHours(0, 0, 0, 0);
@@ -100,7 +100,7 @@ const adopcionController = {
             // Obtener la adopción completa
             const adopcionCompleta = await adopcionModel.getById(adopcionId);
 
-            // Generar PDF
+            // Generar PDF DE CITA (no compromiso)
             const pdfDir = path.join(__dirname, '..', 'uploads', 'documentos');
             
             try {
@@ -109,19 +109,22 @@ const adopcionController = {
                 await fs.mkdir(pdfDir, { recursive: true });
             }
 
-            const pdfFilename = `compromiso-${adopcionId}-${Date.now()}.pdf`;
+           
+            const pdfFilename = `cita-adopcion-${adopcionId}-${Date.now()}.pdf`;
             const pdfPath = path.join(pdfDir, pdfFilename);
-            const compromisoUrl = `/uploads/documentos/${pdfFilename}`;
+            const citaUrl = `/uploads/documentos/${pdfFilename}`;
 
-            await generarCompromisoPDF(adopcionCompleta, pdfPath);
-            await adopcionModel.updateCompromisoUrl(adopcionId, compromisoUrl);
+            
+            await generarCitaPDF(adopcionCompleta, pdfPath);
+            await adopcionModel.updateCompromisoUrl(adopcionId, citaUrl);
 
             const adopcionFinal = await adopcionModel.getById(adopcionId);
 
             res.status(201).json({
                 success: true,
-                message: 'Adopción registrada exitosamente. Documento de compromiso generado.',
-                data: adopcionFinal
+                message: 'Cita de adopción registrada exitosamente.',
+                data: adopcionFinal,
+                citaUrl: citaUrl 
             });
         } catch (error) {
             console.error('Error al crear adopción:', error);
@@ -159,7 +162,7 @@ const adopcionController = {
             if (!adopcion.compromiso_url) {
                 return res.status(404).json({
                     success: false,
-                    message: 'No hay documento de compromiso disponible'
+                    message: 'No hay documento disponible'
                 });
             }
 
@@ -168,8 +171,13 @@ const adopcionController = {
             // Verificar que el archivo existe
             await fs.access(filePath);
 
+            // ✅ Cambiar nombre de descarga
+            const filename = adopcion.compromiso_url.includes('cita') 
+                ? `Cita-Adopcion-${id}.pdf`
+                : `Compromiso-Adopcion-${id}.pdf`;
+
             // Enviar archivo
-            res.download(filePath, `Compromiso-Adopcion-${id}.pdf`, (err) => {
+            res.download(filePath, filename, (err) => {
                 if (err) {
                     console.error('Error al descargar:', err);
                     res.status(500).json({
@@ -179,7 +187,7 @@ const adopcionController = {
                 }
             });
         } catch (error) {
-            console.error('Error al descargar compromiso:', error);
+            console.error('Error al descargar documento:', error);
             res.status(500).json({
                 success: false,
                 message: 'Error al descargar documento',

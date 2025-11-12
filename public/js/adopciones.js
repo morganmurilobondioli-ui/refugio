@@ -353,11 +353,6 @@ function renderizarTabla() {
 /**
  * Manejar submit del formulario
  */
-// En la función handleSubmit, después de obtener los datos:
-
-/**
- * Manejar submit del formulario
- */
 async function handleSubmit(e) {
     e.preventDefault();
     

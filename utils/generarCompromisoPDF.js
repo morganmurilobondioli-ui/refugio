@@ -17,9 +17,10 @@ const generarCompromisoPDF = (adopcion, outputPath) => {
             doc.pipe(stream);
 
             // ENCABEZADO
-            doc.fontSize(20)
+            doc.fontSize(24)
                .font('Helvetica-Bold')
-               .text('🐾 REFUGIO DON PEPITO', { align: 'center' })
+               .fillColor('#4CAF50')
+               .text('REFUGIO DON PEPITO', { align: 'center' }) 
                .moveDown(0.5);
 
             doc.fontSize(16)
