@@ -1,6 +1,6 @@
 // controllers/adopcionController.js
 const adopcionModel = require('../models/adopcionModel');
-const { generarCompromisoPDF } = require('../utils/generarCompromisoPDF');
+const { generarCompromisoPDF } = require('../utils/generarCompromisoPDF'); // ✅ Ruta correcta
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -65,32 +65,44 @@ const adopcionController = {
                 });
             }
 
-            // Validar fecha
-            const fechaAdopcionDate = new Date(fecha_adopcion);
+            // Validar fecha (código anterior se mantiene igual)
+            const fechaAdopcion = new Date(fecha_adopcion);
             const hoy = new Date();
+            fechaAdopcion.setHours(0, 0, 0, 0);
             hoy.setHours(0, 0, 0, 0);
             
-            if (fechaAdopcionDate > hoy) {
+            const ayer = new Date(hoy);
+            ayer.setDate(ayer.getDate() - 1);
+            const maxFuturo = new Date(hoy);
+            maxFuturo.setDate(maxFuturo.getDate() + 60);
+
+            if (fechaAdopcion < ayer) {
                 return res.status(400).json({
                     success: false,
-                    message: 'La fecha de adopción no puede ser futura'
+                    message: 'La fecha de adopción no puede ser anterior a ayer'
                 });
             }
 
-            // Crear adopción (sin PDF todavía)
+            if (fechaAdopcion > maxFuturo) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'La fecha de adopción no puede ser más de 60 días en el futuro'
+                });
+            }
+
+            // Crear adopción (el modelo maneja la transacción)
             const adopcionId = await adopcionModel.create({
                 animal_id,
                 duenio_id,
                 fecha_adopcion
             });
 
-            // Obtener la adopción completa con todos los datos
+            // Obtener la adopción completa
             const adopcionCompleta = await adopcionModel.getById(adopcionId);
 
-            // Generar PDF con los datos completos
+            // Generar PDF
             const pdfDir = path.join(__dirname, '..', 'uploads', 'documentos');
             
-            // Crear directorio si no existe
             try {
                 await fs.access(pdfDir);
             } catch {
@@ -101,13 +113,9 @@ const adopcionController = {
             const pdfPath = path.join(pdfDir, pdfFilename);
             const compromisoUrl = `/uploads/documentos/${pdfFilename}`;
 
-            // Generar el PDF
             await generarCompromisoPDF(adopcionCompleta, pdfPath);
-
-            // Actualizar la adopción con la URL del PDF
             await adopcionModel.updateCompromisoUrl(adopcionId, compromisoUrl);
 
-            // Obtener adopción actualizada
             const adopcionFinal = await adopcionModel.getById(adopcionId);
 
             res.status(201).json({
@@ -134,7 +142,7 @@ const adopcionController = {
         }
     },
 
-    // AGREGAR nuevo endpoint para descargar el PDF
+    // GET /api/adopciones/:id/descargar - Descargar PDF
     descargarCompromiso: async (req, res) => {
         try {
             const { id } = req.params;

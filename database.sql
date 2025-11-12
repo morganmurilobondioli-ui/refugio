@@ -16,7 +16,7 @@ CREATE TABLE animal (
     raza VARCHAR(30) NOT NULL,
     edad INT NOT NULL,
     peso DECIMAL(5,2), 
-    descripcion VARCHAR(250),
+    descripcion VARCHAR(5000),
     foto_url VARCHAR(255),
     estado ENUM('disponible', 'adoptado', 'en_proceso') DEFAULT 'disponible',
     responsable_id INT, 

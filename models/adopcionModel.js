@@ -130,14 +130,14 @@ const adopcionModel = {
         }
     },
 
-    // Create
     create: async (data) => {
         const connection = await require('../config/db').pool.getConnection();
         
         try {
+            // Iniciar transacción
             await connection.beginTransaction();
 
-            // 1. Verificar animal
+            // 1. Verificar que el animal existe y está disponible
             const [animal] = await connection.execute(
                 'SELECT estado FROM animal WHERE id = ?',
                 [data.animal_id]
@@ -151,7 +151,7 @@ const adopcionModel = {
                 throw new Error('El animal no está disponible para adopción');
             }
 
-            // 2. Verificar dueño
+            // 2. Verificar que el dueño existe
             const [duenio] = await connection.execute(
                 'SELECT id FROM duenio WHERE id = ?',
                 [data.duenio_id]
@@ -161,10 +161,10 @@ const adopcionModel = {
                 throw new Error('El dueño no existe');
             }
 
-            // 3. Crear adopción SIN compromiso_url (se generará después)
+            // 3. Crear la adopción
             const [result] = await connection.execute(
                 `INSERT INTO adopcion (animal_id, duenio_id, fecha_adopcion)
-                 VALUES (?, ?, ?)`,
+                VALUES (?, ?, ?)`,
                 [
                     data.animal_id,
                     data.duenio_id,
@@ -172,16 +172,18 @@ const adopcionModel = {
                 ]
             );
 
-            // 4. Actualizar estado del animal
+            // 4. ✅ CAMBIAR ESTADO A 'en_proceso' en lugar de 'adoptado'
             await connection.execute(
-                "UPDATE animal SET estado = 'adoptado' WHERE id = ?",
+                "UPDATE animal SET estado = 'en_proceso' WHERE id = ?",
                 [data.animal_id]
             );
 
+            // Confirmar transacción
             await connection.commit();
             
             return result.insertId;
         } catch (error) {
+            // Revertir cambios si hay error
             await connection.rollback();
             console.error('Error en create:', error);
             throw error;
