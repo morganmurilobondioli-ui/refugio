@@ -1,5 +1,3 @@
-// public/js/animales.js
-
 /**
  * GALERÍA DE ANIMALES
  * Gestión completa de la vista de animales

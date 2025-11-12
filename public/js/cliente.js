@@ -1,5 +1,3 @@
-// public/js/cliente.js
-
 /**
  * VISTA PÚBLICA - CLIENTE
  * Usa los mismos endpoints del backend sin modificarlos

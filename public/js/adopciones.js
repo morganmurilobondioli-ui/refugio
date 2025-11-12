@@ -1,5 +1,3 @@
-// public/js/adopciones.js
-
 /**
  * GESTIÓN DE ADOPCIONES
  */

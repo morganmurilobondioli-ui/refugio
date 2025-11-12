@@ -1,5 +1,3 @@
-// public/js/app.refugio.js
-
 /**
  * REFUGIO DON PEPITO - Funciones Globales
  * Archivo con utilidades compartidas por todas las páginas

@@ -1,5 +1,3 @@
-// public/js/duenios.js
-
 /**
  * GESTIÓN DE DUEÑOS
  */

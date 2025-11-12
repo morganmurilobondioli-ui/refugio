@@ -1,5 +1,3 @@
-// public/js/responsables.js
-
 /**
  * GESTIÓN DE RESPONSABLES
  */
