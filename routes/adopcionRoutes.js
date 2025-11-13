@@ -11,5 +11,6 @@ router.get('/:id/descargar', adopcionController.descargarCompromiso);
 router.post('/', adopcionController.crearAdopcion); 
 router.delete('/:id', adopcionController.eliminarAdopcion);
 router.put('/:id/finalizar', adopcionController.finalizarAdopcion);
+router.post('/cita', adopcionController.crearCitaAdopcion);
 
 module.exports = router;

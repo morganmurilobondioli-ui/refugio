@@ -1,7 +1,7 @@
 // controllers/adopcionController.js
 const adopcionModel = require('../models/adopcionModel');
 const { generarCompromisoPDF } = require('../utils/generarCompromisoPDF');
-const { generarCitaPDF } = require('../utils/generarCitaPDF'); // ✅ AGREGAR
+const { generarCitaPDF } = require('../utils/generarCitaPDF');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -56,9 +56,12 @@ const adopcionController = {
     // POST /api/adopciones - Crear adopción
     crearAdopcion: async (req, res) => {
         try {
-            const { animal_id, duenio_id, fecha_adopcion, tipo } = req.body; // ✅ Agregar 'tipo'
+            // ✅ CORRECCIÓN 1: Extraer TODAS las variables necesarias
+            const { animal_id, duenio_id, fecha_adopcion, tipo } = req.body;
 
-            // Validaciones
+            console.log('Datos recibidos:', { animal_id, duenio_id, fecha_adopcion, tipo });
+
+            // ✅ CORRECCIÓN 2: Validar con el nombre correcto
             if (!animal_id || !duenio_id || !fecha_adopcion) {
                 return res.status(400).json({
                     success: false,
@@ -66,21 +69,22 @@ const adopcionController = {
                 });
             }
 
-            // Validar fecha
+            // ✅ CORRECCIÓN 3: Usar la variable correcta
             const fechaAdopcion = new Date(fecha_adopcion);
             const hoy = new Date();
             fechaAdopcion.setHours(0, 0, 0, 0);
             hoy.setHours(0, 0, 0, 0);
             
-            const ayer = new Date(hoy);
-            ayer.setDate(ayer.getDate() - 1);
+            // Permitir hasta 1 año atrás para adopciones
+            const unAnioAtras = new Date(hoy);
+            unAnioAtras.setFullYear(unAnioAtras.getFullYear() - 1);
             const maxFuturo = new Date(hoy);
             maxFuturo.setDate(maxFuturo.getDate() + 60);
 
-            if (fechaAdopcion < ayer) {
+            if (fechaAdopcion < unAnioAtras) {
                 return res.status(400).json({
                     success: false,
-                    message: 'La fecha de adopción no puede ser anterior a ayer'
+                    message: 'La fecha de adopción no puede ser anterior a 1 año atrás'
                 });
             }
 
@@ -112,7 +116,7 @@ const adopcionController = {
 
             let pdfFilename, pdfUrl, mensaje;
 
-            // ✅ DIFERENCIAR SEGÚN EL TIPO
+            // ✅ CORRECCIÓN 4: Tipo ahora está definido
             if (tipo === 'cita') {
                 // Cliente público: generar CITA
                 pdfFilename = `cita-adopcion-${adopcionId}-${Date.now()}.pdf`;
@@ -140,11 +144,12 @@ const adopcionController = {
                 success: true,
                 message: mensaje,
                 data: adopcionFinal,
-                pdfUrl: pdfUrl, // ✅ Devolver URL del PDF
-                tipo: tipo || 'compromiso' // ✅ Indicar qué tipo de PDF se generó
+                pdfUrl: pdfUrl,
+                tipo: tipo || 'compromiso'
             });
         } catch (error) {
             console.error('Error al crear adopción:', error);
+            console.error('Stack completo:', error.stack);
             
             if (error.message.includes('no existe') || 
                 error.message.includes('no está disponible')) {
@@ -157,6 +162,107 @@ const adopcionController = {
             res.status(500).json({
                 success: false,
                 message: 'Error al crear adopción',
+                error: error.message
+            });
+        }
+    },
+
+    // POST /api/adopciones/cita - Crear cita de adopción
+    crearCitaAdopcion: async (req, res) => {
+        try {
+            // ✅ CORRECCIÓN: Extraer fecha_cita correctamente
+            const { animal_id, duenio_id, fecha_cita } = req.body;
+
+            console.log('Datos de cita recibidos:', { animal_id, duenio_id, fecha_cita });
+
+            // Validaciones de campos obligatorios
+            if (!animal_id || !duenio_id || !fecha_cita) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Animal, dueño y fecha de la cita son obligatorios'
+                });
+            }
+            
+            // Validación de fecha para CITAS (Hoy hasta 60 días futuro)
+            const fechaCita = new Date(fecha_cita);
+            const hoy = new Date();
+            
+            fechaCita.setHours(0, 0, 0, 0); 
+            hoy.setHours(0, 0, 0, 0);
+            
+            const maxFuturo = new Date(hoy);
+            maxFuturo.setDate(maxFuturo.getDate() + 60); 
+
+            // Las citas NO pueden ser en el pasado (solo desde hoy)
+            if (fechaCita.getTime() < hoy.getTime()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'La fecha de la cita no puede ser anterior a hoy.'
+                });
+            }
+
+            // No puede ser más de 60 días en el futuro
+            if (fechaCita.getTime() > maxFuturo.getTime()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'La fecha de la cita no puede ser más de 60 días en el futuro.'
+                });
+            }
+            
+            // ✅ Crear el registro usando fecha_cita como fecha_adopcion
+            const adopcionId = await adopcionModel.create({
+                animal_id,
+                duenio_id,
+                fecha_adopcion: fecha_cita
+            });
+
+            // Obtener la cita completa
+            const adopcionCompleta = await adopcionModel.getById(adopcionId);
+
+            // Generar PDF
+            const pdfDir = path.join(__dirname, '..', 'uploads', 'documentos');
+            
+            try {
+                await fs.access(pdfDir);
+            } catch {
+                await fs.mkdir(pdfDir, { recursive: true });
+            }
+
+            const pdfFilename = `cita-adopcion-${adopcionId}-${Date.now()}.pdf`;
+            const pdfPath = path.join(pdfDir, pdfFilename);
+            const pdfUrl = `/uploads/documentos/${pdfFilename}`;
+            
+            await generarCitaPDF(adopcionCompleta, pdfPath); 
+            const mensaje = 'Cita de adopción registrada exitosamente. Documento de cita generado.';
+            
+            // Actualizar URL del documento
+            await adopcionModel.updateCompromisoUrl(adopcionId, pdfUrl);
+
+            const adopcionFinal = await adopcionModel.getById(adopcionId);
+
+            res.status(201).json({
+                success: true,
+                message: mensaje,
+                data: adopcionFinal,
+                pdfUrl: pdfUrl,
+                tipo: 'cita'
+            });
+            
+        } catch (error) {
+            console.error('Error al crear cita de adopción:', error);
+            console.error('Stack completo:', error.stack);
+            
+            if (error.message.includes('no existe') || 
+                error.message.includes('no está disponible')) {
+                return res.status(400).json({
+                    success: false,
+                    message: error.message
+                });
+            }
+
+            res.status(500).json({
+                success: false,
+                message: 'Error al crear la cita de adopción',
                 error: error.message
             });
         }
@@ -185,15 +291,12 @@ const adopcionController = {
 
             const filePath = path.join(__dirname, '..', adopcion.compromiso_url);
             
-            // Verificar que el archivo existe
             await fs.access(filePath);
 
-            // ✅ Cambiar nombre de descarga
             const filename = adopcion.compromiso_url.includes('cita') 
                 ? `Cita-Adopcion-${id}.pdf`
                 : `Compromiso-Adopcion-${id}.pdf`;
 
-            // Enviar archivo
             res.download(filePath, filename, (err) => {
                 if (err) {
                     console.error('Error al descargar:', err);
@@ -218,7 +321,6 @@ const adopcionController = {
         try {
             const { id } = req.params;
 
-            // Verificar que existe
             const adopcionExiste = await adopcionModel.getById(id);
             if (!adopcionExiste) {
                 return res.status(404).json({
@@ -227,17 +329,14 @@ const adopcionController = {
                 });
             }
 
-            // Eliminar (el modelo maneja la transacción y retorna el PDF)
             const result = await adopcionModel.delete(id);
 
-            // Eliminar archivo PDF si existe
             if (result.compromisoUrl) {
                 try {
                     const filePath = path.join(__dirname, '..', result.compromisoUrl);
                     await fs.unlink(filePath);
                 } catch (unlinkError) {
                     console.error('Error al eliminar PDF:', unlinkError);
-                    // No fallar la operación si no se puede eliminar el archivo
                 }
             }
 

@@ -43,3 +43,43 @@ CREATE TABLE adopcion (
     FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE CASCADE,
     FOREIGN KEY (duenio_id) REFERENCES duenio(id) ON DELETE CASCADE
 );
+
+
+
+INSERT INTO responsable (nombre, apellido, telefono, email) VALUES
+('Lucía', 'Fernández', '987654321', 'lucia.fernandez@example.com'),
+('Mario', 'Torres', '912345678', 'mario.torres@example.com'),
+('Elena', 'Ramos', '999888777', 'elena.ramos@example.com');
+
+INSERT INTO duenio (nombre, apellido, telefono, email) VALUES
+('Carlos', 'Pérez', '955667788', 'carlos.perez@example.com'),
+('Andrea', 'López', '944556677', 'andrea.lopez@example.com'),
+('Juan', 'Mendoza', '933445566', 'juan.mendoza@example.com');
+
+SELECT id, nombre, estado FROM animal;
+
+-- Ejemplo de cómo se vería la corrección en tu query SQL de la API:
+SELECT 
+    a.id,
+    -- 1. 🗓️ FECHAS: Usamos formato ISO 8601 (YYYY-MM-DDTHH:MM:SS.000Z) para que JS funcione.
+    DATE_FORMAT(a.fecha_adopcion, '%Y-%m-%dT%H:%i:%s.000Z') AS fecha_adopcion,
+    a.compromiso_url,
+    DATE_FORMAT(a.fecha_registro, '%Y-%m-%dT%H:%i:%s.000Z') AS fecha_registro,
+    
+    an.id AS animal_id,
+    an.nombre AS animal_nombre,
+    an.raza AS animal_raza,
+    -- 2. 🖼️ FOTO: Dejamos el nombre original de la columna.
+    an.foto_url AS foto_url,
+    an.estado AS animal_estado,
+
+    d.id AS duenio_id,
+    d.nombre AS duenio_nombre,
+    d.apellido AS duenio_apellido,
+    d.telefono AS duenio_telefono,
+    d.email AS duenio_email
+
+FROM adopcion a
+JOIN animal an ON a.animal_id = an.id
+JOIN duenio d ON a.duenio_id = d.id
+ORDER BY a.id DESC;

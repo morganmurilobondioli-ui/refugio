@@ -16,16 +16,21 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('🐾 Módulo de adopciones cargado');
 
     // --- Configuración de la fecha ---
-    const fechaInput = document.getElementById('fecha_adopcion');
-    const hoy = new Date().toISOString().split('T')[0];
-    fechaInput.max = hoy;
+    const fechaInput = document.getElementById('fecha_registro_adopcion');
     
-    // Opcional: Establecer fecha mínima (1 año atrás)
-    const unAnioAtras = new Date();
-    unAnioAtras.setFullYear(unAnioAtras.getFullYear() - 1);
-    fechaInput.min = unAnioAtras.toISOString().split('T')[0];
-    
-    fechaInput.value = hoy; // Valor por defecto
+    // 🚨 CORRECCIÓN 1: Se necesita la comprobación 'if (fechaInput)' para evitar el error 'Cannot set properties of null'
+    // que ocurre si el script se carga antes de que se parsee el HTML completo o si el campo no existe.
+    if (fechaInput) { 
+        const hoy = new Date().toISOString().split('T')[0];
+        fechaInput.max = hoy;
+        
+        // Opcional: Establecer fecha mínima (1 año atrás)
+        const unAnioAtras = new Date();
+        unAnioAtras.setFullYear(unAnioAtras.getFullYear() - 1);
+        fechaInput.min = unAnioAtras.toISOString().split('T')[0];
+        
+        fechaInput.value = hoy; // Valor por defecto
+    }
     // ---------------------------------
     
     cargarAdopciones();
@@ -55,7 +60,11 @@ function initEventListeners() {
     document.getElementById('searchInput').addEventListener('input', debounce(aplicarFiltros, 300));
     
     // Formulario (Se asume que handleSubmit existe en otro script o está abajo)
-    document.getElementById('formAdopcion').addEventListener('submit', handleSubmit); 
+    // 🚨 CORRECCIÓN 2: Asegurar que el formulario exista antes de añadir el listener
+    const formAdopcion = document.getElementById('formAdopcion');
+    if (formAdopcion) {
+        formAdopcion.addEventListener('submit', handleSubmit); 
+    }
     
     // Preview
     document.getElementById('animal_id').addEventListener('change', mostrarPreviewAnimal);
@@ -186,7 +195,7 @@ function aplicarFiltroEstado(nuevoEstado) {
     let estadoBuscado = estadoFiltroActual;
 
     if (estadoFiltroActual === 'finalizadas') { 
-        estadoBuscado = 'adoptado';            
+        estadoBuscado = 'adoptado';            
     } else if (estadoFiltroActual === 'canceladas') {
         estadoBuscado = 'cancelada';
     }
@@ -195,20 +204,20 @@ function aplicarFiltroEstado(nuevoEstado) {
     if (estadoFiltroActual === 'todos') {
         adopcionesFiltradas = todasLasAdopciones;
     } else if (estadoFiltroActual === 'disponible') {
-         // Crear un mock de adopción para la vista 'disponible' (se mantiene la lógica original)
-         adopcionesFiltradas = animalesDisponibles.map((a) => ({
-            id: a.id,
-            animal_nombre: a.nombre,
-            animal_raza: a.raza,
-            animal_foto: a.foto_url,
-            animal_estado: 'disponible', 
-            duenio_nombre: "N/A", 
-            duenio_apellido: "",
-            duenio_telefono: "",
-            fecha_adopcion: null, 
-            fecha_registro: a.fecha_registro,
-            compromiso_url: null,
-        }));
+          // Crear un mock de adopción para la vista 'disponible' (se mantiene la lógica original)
+          adopcionesFiltradas = animalesDisponibles.map((a) => ({
+             id: a.id,
+             animal_nombre: a.nombre,
+             animal_raza: a.raza,
+             animal_foto: a.foto_url,
+             animal_estado: 'disponible', 
+             duenio_nombre: "N/A", 
+             duenio_apellido: "",
+             duenio_telefono: "",
+             fecha_adopcion: null, 
+             fecha_registro: a.fecha_registro,
+             compromiso_url: null,
+         }));
     } else {
         // Filtrar por estado normal (en_proceso, adoptado, cancelada)
         // ESTA LÍNEA AHORA USA 'adoptado' si la pestaña es 'finalizadas'
@@ -280,16 +289,16 @@ function renderizarAdopciones() {
     
     if (adopcionesFiltradas.length === 0) {
          tbody.innerHTML = `
-            <tr>
-                <td colspan="7" class="text-center p-5 text-muted">
-                    <i class="bi bi-inbox fs-1 mb-3"></i>
-                    <p class="mb-0">No se encontraron registros en el estado 
-                        <strong>${estadoFiltroActual.toUpperCase().replace('_', ' ')}</strong>.
-                    </p>
-                </td>
-            </tr>
-        `;
-        return;
+             <tr>
+                 <td colspan="7" class="text-center p-5 text-muted">
+                     <i class="bi bi-inbox fs-1 mb-3"></i>
+                     <p class="mb-0">No se encontraron registros en el estado 
+                         <strong>${estadoFiltroActual.toUpperCase().replace('_', ' ')}</strong>.
+                     </p>
+                 </td>
+             </tr>
+         `;
+         return;
     }
 
     tbody.innerHTML = adopcionesFiltradas.map(adopcion => {
@@ -323,7 +332,7 @@ function renderizarAdopciones() {
 
                 <td class="py-3 fw-medium">${adopcion.fecha_adopcion ? formatDate(adopcion.fecha_adopcion) : 'N/A'}</td>
 
-                <td class="py-3 text-muted small">${adopcion.fecha_registro ? formatDate(adopcion.fecha_registro, true) : 'Invalid Date'}</td>
+                <td class="py-3 text-muted small">${adopcion.fecha_registro ? formatDate(adopcion.fecha_registro, true) : 'N/A'}</td>
                 
                 <td class="py-3">
                     ${tienePDF ? `
@@ -352,7 +361,7 @@ function renderizarAdopciones() {
                         </div>
                     ` : esDisponible ? `
                         <span class="badge ${getEstadoBadge(adopcion.animal_estado)} px-3 py-2">
-                           DISPONIBLE
+                            DISPONIBLE
                         </span>
                     ` : `
                          <div class="d-flex flex-wrap gap-1 align-items-center">
@@ -367,11 +376,11 @@ function renderizarAdopciones() {
                             <span class="badge ${getEstadoBadge(adopcion.animal_estado)} px-3 py-2">
                                 ${adopcion.animal_estado.toUpperCase().replace('_', ' ')}
                             </span>
-                             <button onclick="verDetalle(${adopcion.id});"
-                                class="btn btn-sm btn-outline-primary shadow-sm" title="Ver Detalle">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </div>
+                            <button onclick="verDetalle(${adopcion.id});"
+                                 class="btn btn-sm btn-outline-primary shadow-sm" title="Ver Detalle">
+                                 <i class="bi bi-eye"></i>
+                             </button>
+                         </div>
                     `}
                 </td>
             </tr>
@@ -446,6 +455,10 @@ function actualizarEstadisticas() {
     const hoy = new Date();
     const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     const esteMes = todasLasAdopciones.filter(a => {
+        // 🚨 CORRECCIÓN 3: Si 'fecha_adopcion' es null (para mock de disponible), esto falla. 
+        // Se debe verificar la existencia del campo antes de crear el objeto Date.
+        if (!a.fecha_adopcion) return false;
+        
         const fecha = new Date(a.fecha_adopcion);
         return fecha >= primerDiaMes;
     }).length;
@@ -468,42 +481,63 @@ function actualizarEstadisticas() {
  * Maneja el envío del formulario de nueva adopción.
  */
 async function handleSubmit(event) {
-    // Es VITAL agregar 'event' aquí
     event.preventDefault(); 
     
     const form = event.target;
-    // ⚠️ Recoge los datos del formulario aquí
-    const data = {
+    
+    // ✅ CORRECCIÓN: Definir correctamente formData
+    const formData = {
         animal_id: form.animal_id.value,
         duenio_id: form.duenio_id.value,
-        fecha_adopcion: form.fecha_adopcion.value,
-        // Agrega cualquier otro campo necesario
+        fecha_adopcion: form.fecha_registro_adopcion.value, // ← El backend espera 'fecha_adopcion'
+        tipo: 'compromiso'
     };
+
+    // Logs para debugging
+    console.log('Datos que se enviarán:', formData);
+    console.log('Valores individuales:', {
+        animal_id: formData.animal_id,
+        duenio_id: formData.duenio_id,
+        fecha_adopcion: formData.fecha_adopcion,
+        tipo: formData.tipo
+    });
     
-    // Simple validación (Asegúrate de que los campos no estén vacíos)
-    if (!data.animal_id || !data.duenio_id) {
-         showAlert('Debe seleccionar un animal y un dueño.', 'warning');
-         return;
+    // Validación
+    if (!formData.animal_id || !formData.duenio_id || !formData.fecha_adopcion) {
+        showAlert('Debe seleccionar un animal, un dueño y una fecha.', 'warning');
+        return;
     }
 
     try {
         const response = await fetchAPI('/api/adopciones', { 
             method: 'POST', 
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data) 
+            body: JSON.stringify(formData) 
         });
 
         if (response.success) {
             showAlert('Adopción registrada correctamente', 'success');
             
-            // 🚨 Sincronización completa de las vistas
+            // Recargar datos
             await cargarAdopciones(); 
             await cargarAnimalesDisponibles(); 
             aplicarFiltroEstado('en_proceso');
             
-            // Suponiendo que usas Bootstrap Modal, esto lo cerraría
+            // Cerrar modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('modalAdopcion'));
             if (modal) modal.hide();
+            
+            // Opcional: Mostrar enlace de descarga del PDF
+            if (response.pdfUrl) {
+                Swal.fire({
+                    title: '¡Adopción registrada!',
+                    html: `El compromiso de adopción ha sido generado.<br>
+                           <a href="${response.pdfUrl}" target="_blank" class="btn btn-success mt-2">
+                               <i class="bi bi-file-pdf"></i> Descargar PDF
+                           </a>`,
+                    icon: 'success'
+                });
+            }
         } else {
             showAlert(response.message || 'Error al registrar adopción', 'error');
         }
@@ -512,6 +546,7 @@ async function handleSubmit(event) {
         showAlert('Error de conexión al registrar adopción.', 'error');
     }
 }
+
 /**
  * Descarga el PDF de Compromiso de Adopción.
  */
