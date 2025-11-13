@@ -125,7 +125,7 @@ async function cargarAnimalesDisponibles() {
             select.innerHTML = '<option value="">-- Seleccionar animal --</option>' +
                 animalesDisponibles.map(animal => 
                     `<option value="${animal.id}" data-animal='${JSON.stringify(animal)}'>
-                        ${animal.nombre} - ${animal.raza}
+                        ${animal.nombre} - ${animal.raza} 
                     </option>`
                 ).join('');
             
@@ -271,6 +271,26 @@ function aplicarFiltros() {
     renderizarTabla();
 }
 
+/**
+ * Descarga el PDF de Compromiso de Adopción.
+ * Usa la función de utilidad downloadPDF definida en app.refugio.js
+ * @param {number} adopcionId - ID de la adopción
+ */
+function descargarCompromiso(adopcionId) {
+    // 1. Construir la URL y el nombre de archivo específicos
+    // Se asume que API_BASE es una constante global definida en app.refugio.js
+    const url = `${API_BASE}/api/adopciones/${adopcionId}/descargar`;
+    const filename = `Compromiso_Adopcion_${adopcionId}.pdf`;
+    
+    // 2. Ejecutar la función de descarga robusta (la que ya existe)
+    if (typeof downloadPDF === 'function') {
+        downloadPDF(url, filename);
+    } else {
+        showAlert('Error: La función de descarga no está disponible.', 'error');
+        console.error('La función downloadPDF no fue encontrada.');
+    }
+}
+
 // ==============================================
 // RENDERIZADO
 // ==============================================
@@ -321,13 +341,14 @@ function renderizarTabla() {
             <td class="align-middle">
                 ${adopcion.compromiso_url ? `
                     <a href="#" // Establecer href a '#'
-                        onclick="downloadPDF('http://localhost:3000/api/adopciones/${adopcion.id}/descargar', 'Compromiso_Adopcion_${adopcion.id}.pdf'); return false;" // Usar onclick y URL completa
-                        class="btn btn-extra-small btn-success btn-rounded"
-                        title="Descargar compromiso">
-                        <i class="bi bi-file-pdf"></i> PDF
-                    </a>
+                onclick="descargarCompromiso(${adopcion.id}); return false;" // 🎯 Llama a la nueva función
+                class="btn btn-extra-small btn-success btn-rounded"
+                title="Descargar compromiso">
+                    <i class="bi bi-file-pdf"></i> PDF
+                </a>
                 ` : '<span class="text-muted">-</span>'}
             </td>
+            <td class="align-middle">
             <td class="align-middle">
                 <div class="d-flex gap-1">
                     <button onclick="verDetalle(${adopcion.id})" 

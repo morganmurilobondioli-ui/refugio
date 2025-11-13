@@ -1,6 +1,7 @@
+// controllers/adopcionController.js
 const adopcionModel = require('../models/adopcionModel');
 const { generarCompromisoPDF } = require('../utils/generarCompromisoPDF');
-const { generarCitaPDF } = require('../utils/generarCitaPDF'); 
+const { generarCitaPDF } = require('../utils/generarCitaPDF'); // ✅ AGREGAR
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -55,7 +56,7 @@ const adopcionController = {
     // POST /api/adopciones - Crear adopción
     crearAdopcion: async (req, res) => {
         try {
-            const { animal_id, duenio_id, fecha_adopcion } = req.body;
+            const { animal_id, duenio_id, fecha_adopcion, tipo } = req.body; // ✅ Agregar 'tipo'
 
             // Validaciones
             if (!animal_id || !duenio_id || !fecha_adopcion) {
@@ -90,7 +91,7 @@ const adopcionController = {
                 });
             }
 
-            // Crear adopción (el modelo maneja la transacción)
+            // Crear adopción
             const adopcionId = await adopcionModel.create({
                 animal_id,
                 duenio_id,
@@ -100,7 +101,7 @@ const adopcionController = {
             // Obtener la adopción completa
             const adopcionCompleta = await adopcionModel.getById(adopcionId);
 
-            // Generar PDF DE CITA (no compromiso)
+            // Generar PDF
             const pdfDir = path.join(__dirname, '..', 'uploads', 'documentos');
             
             try {
@@ -109,22 +110,38 @@ const adopcionController = {
                 await fs.mkdir(pdfDir, { recursive: true });
             }
 
-           
-            const pdfFilename = `cita-adopcion-${adopcionId}-${Date.now()}.pdf`;
-            const pdfPath = path.join(pdfDir, pdfFilename);
-            const citaUrl = `/uploads/documentos/${pdfFilename}`;
+            let pdfFilename, pdfUrl, mensaje;
 
-            
-            await generarCitaPDF(adopcionCompleta, pdfPath);
-            await adopcionModel.updateCompromisoUrl(adopcionId, citaUrl);
+            // ✅ DIFERENCIAR SEGÚN EL TIPO
+            if (tipo === 'cita') {
+                // Cliente público: generar CITA
+                pdfFilename = `cita-adopcion-${adopcionId}-${Date.now()}.pdf`;
+                const pdfPath = path.join(pdfDir, pdfFilename);
+                pdfUrl = `/uploads/documentos/${pdfFilename}`;
+                
+                await generarCitaPDF(adopcionCompleta, pdfPath);
+                mensaje = 'Cita de adopción registrada exitosamente.';
+                
+            } else {
+                // Admin: generar COMPROMISO
+                pdfFilename = `compromiso-${adopcionId}-${Date.now()}.pdf`;
+                const pdfPath = path.join(pdfDir, pdfFilename);
+                pdfUrl = `/uploads/documentos/${pdfFilename}`;
+                
+                await generarCompromisoPDF(adopcionCompleta, pdfPath);
+                mensaje = 'Adopción registrada exitosamente. Documento de compromiso generado.';
+            }
+
+            await adopcionModel.updateCompromisoUrl(adopcionId, pdfUrl);
 
             const adopcionFinal = await adopcionModel.getById(adopcionId);
 
             res.status(201).json({
                 success: true,
-                message: 'Cita de adopción registrada exitosamente.',
+                message: mensaje,
                 data: adopcionFinal,
-                citaUrl: citaUrl 
+                pdfUrl: pdfUrl, // ✅ Devolver URL del PDF
+                tipo: tipo || 'compromiso' // ✅ Indicar qué tipo de PDF se generó
             });
         } catch (error) {
             console.error('Error al crear adopción:', error);

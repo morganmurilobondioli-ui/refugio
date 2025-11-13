@@ -308,14 +308,17 @@ async function verDetalle(id) {
     const modalBody = document.getElementById('detalleBody');
     const modalTitle = document.getElementById('detalleNombre');
     
+    
     try {
         modalBody.innerHTML = '<div class="text-center p-5"><div class="spinner-border" role="status"></div></div>';
         modal.show();
         
         const data = await fetchAPI(`/api/duenios/${id}`);
         
+        
         if (data.success) {
             const duenio = data.data;
+            
             modalTitle.textContent = `${duenio.nombre} ${duenio.apellido}`;
             
             modalBody.innerHTML = `
@@ -344,21 +347,138 @@ async function verDetalle(id) {
                         <div class="col-12">
                             <label class="fw-600 text-dark-gray d-block mb-10px">Adopciones realizadas (${duenio.adopciones.length}):</label>
                             <div class="list-group">
-                                ${duenio.adopciones.map(adopcion => `
-                                    <div class="list-group-item">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <img src="${getImageUrl(adopcion.foto_url)}" 
-                                                 class="border-radius-6px me-3" 
-                                                 style="width: 60px; height: 60px; object-fit: cover;"
-                                                 alt="${adopcion.nombre}">
-                                            <div class="flex-fill">
-                                                <strong>${adopcion.nombre}</strong> - ${adopcion.raza}
-                                                <br>
-                                                <small class="text-muted">Adoptado el ${formatDate(adopcion.fecha_adopcion)}</small>
+                                ${duenio.adopciones.map(adopcion => {
+                                    // Hacemos el mapeo más robusto
+                                    const animalNombre = adopcion.nombre || 'Nombre Desconocido'; // ✅ Valor por defecto
+                                    const animalRaza = adopcion.raza || 'Raza Desconocida';       // ✅ Valor por defecto
+                                    const fotoUrl = adopcion.foto_url ? getImageUrl(adopcion.foto_url) : 'ruta/a/imagen/default.png';
+
+                                    return `
+                                        <div class="list-group-item">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <img src="${fotoUrl}" 
+                                                        class="border-radius-6px me-3" 
+                                                        style="width: 60px; height: 60px; object-fit: cover;"
+                                                        alt="${animalNombre}">
+                                                <div class="flex-fill">
+                                                    <strong>${animalNombre}</strong> - ${animalRaza}
+                                                    <br>
+                                                    <small class="text-muted">Adoptado el ${formatDate(adopcion.fecha_adopcion)}</small>
+                                                </div>
                                             </div>
+                                            ${adopcion.animal_id ? `
+                                                <button onclick="verDetalleAnimal(${adopcion.animal_id}); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();" 
+                                                        class="btn btn-sm btn-link text-base-color p-0 mt-2">
+                                                    Ver Animal Completo <i class="bi bi-arrow-right"></i>
+                                                </button>
+                                            ` : ''}
                                         </div>
-                                    </div>
-                                `).join('')}
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : '<div class="col-12"><p class="text-muted text-center">No ha realizado adopciones</p></div>'}
+                </div>
+                <div class="d-flex gap-2 mt-4">
+                    <button onclick="editarDuenio(${duenio.id}); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();" 
+                            class="btn btn-medium btn-dark-gray btn-rounded flex-fill">
+                        <i class="bi bi-pencil me-5px"></i>Editar
+                    </button>
+                    <button onclick="confirmarEliminar(${duenio.id}, '${duenio.nombre} ${duenio.apellido}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();" 
+                            class="btn btn-medium btn-outline-danger btn-rounded flex-fill">
+                        <i class="bi bi-trash me-5px"></i>Eliminar
+                    </button>
+                </div>
+            `;
+        }
+        
+    } catch (error) {
+        modalBody.innerHTML = '<div class="alert alert-danger">Error al cargar los detalles</div>';
+    }
+}
+
+
+
+/**
+ * Ver detalle COMPLETO del ANIMAL (Llama al endpoint /api/animales/{id}).
+ * NOTA: Reutiliza el modal #modalDetalle cerrando primero el modal del dueño.
+ */
+/**
+ * Ver detalle del dueño
+ */
+async function verDetalle(id) {
+    const modal = new bootstrap.Modal(document.getElementById('modalDetalle'));
+    const modalBody = document.getElementById('detalleBody');
+    const modalTitle = document.getElementById('detalleNombre');
+    
+    
+    try {
+        modalBody.innerHTML = '<div class="text-center p-5"><div class="spinner-border" role="status"></div></div>';
+        modal.show();
+        
+        const data = await fetchAPI(`/api/duenios/${id}`);
+        
+        
+        if (data.success) {
+            const duenio = data.data;
+            
+            modalTitle.textContent = `${duenio.nombre} ${duenio.apellido}`;
+            
+            modalBody.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-600 text-dark-gray d-block mb-5px">Nombre:</label>
+                        <p class="mb-0">${duenio.nombre}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-600 text-dark-gray d-block mb-5px">Apellido:</label>
+                        <p class="mb-0">${duenio.apellido}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-600 text-dark-gray d-block mb-5px">Teléfono:</label>
+                        <p class="mb-0">${duenio.telefono || '<span class="text-muted">No registrado</span>'}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-600 text-dark-gray d-block mb-5px">Email:</label>
+                        <p class="mb-0">${duenio.email || '<span class="text-muted">No registrado</span>'}</p>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="fw-600 text-dark-gray d-block mb-5px">Registrado:</label>
+                        <p class="mb-0">${formatDate(duenio.fecha_registro, true)}</p>
+                    </div>
+                    
+                    ${duenio.adopciones && duenio.adopciones.length > 0 ? `
+                        <div class="col-12">
+                            <label class="fw-600 text-dark-gray d-block mb-10px">Adopciones realizadas (${duenio.adopciones.length}):</label>
+                            <div class="list-group">
+                                ${duenio.adopciones.map(adopcion => {
+                                    // 🚨 CORRECCIÓN AQUÍ: Usamos animal_nombre y animal_raza
+                                    const animalNombre = adopcion.animal_nombre || 'Nombre Desconocido'; 
+                                    const animalRaza = adopcion.animal_raza || 'Raza Desconocida';       
+                                    const fotoUrl = adopcion.foto_url ? getImageUrl(adopcion.foto_url) : 'ruta/a/imagen/default.png';
+
+                                    return `
+                                        <div class="list-group-item">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <img src="${fotoUrl}" 
+                                                        class="border-radius-6px me-3" 
+                                                        style="width: 60px; height: 60px; object-fit: cover;"
+                                                        alt="${animalNombre}">
+                                                <div class="flex-fill">
+                                                    <strong>${animalNombre}</strong> - ${animalRaza}
+                                                    <br>
+                                                    <small class="text-muted">Adoptado el ${formatDate(adopcion.fecha_adopcion)}</small>
+                                                </div>
+                                            </div>
+                                            ${adopcion.animal_id ? `
+                                                <button onclick="verDetalleAnimal(${adopcion.animal_id}); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();" 
+                                                        class="btn btn-sm btn-link text-base-color p-0 mt-2">
+                                                    Ver Animal Completo <i class="bi bi-arrow-right"></i>
+                                                </button>
+                                            ` : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
                     ` : '<div class="col-12"><p class="text-muted text-center">No ha realizado adopciones</p></div>'}

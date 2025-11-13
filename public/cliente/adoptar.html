@@ -189,7 +189,7 @@
     </section>
 
     <!-- Modal de éxito -->
-    <div class="modal" id="modalExito" tabindex="-1" aria-labelledby="modalExitoLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal" id="modalExito" tabindex="-1" aria-labelledby="modalExitoLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-radius-10px">
                 <div class="modal-body p-50px text-center">
@@ -251,8 +251,7 @@
 
     <!-- scripts -->
     <script src="../js/jquery.js"></script>
-    <!--<script src="../js/vendors.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/vendors.min.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/app.refugio.js"></script>
     <script>
@@ -274,16 +273,17 @@
                 return;
             }
             
-            // Establecer fecha mínima (hoy) y máxima (30 días adelante)
+            // Establecer fecha mínima (hoy) y máxima (60 días adelante)
             const hoy = new Date();
             const maxFecha = new Date();
-            maxFecha.setDate(maxFecha.getDate() + 30);
+            maxFecha.setDate(maxFecha.getDate() + 60);
             
             document.getElementById('fecha_adopcion').min = hoy.toISOString().split('T')[0];
             document.getElementById('fecha_adopcion').max = maxFecha.toISOString().split('T')[0];
             
             cargarAnimal();
             initFormulario();
+            initCheckbox();
         });
         
         /**
@@ -311,9 +311,9 @@
                     // Mostrar resumen
                     resumenContainer.innerHTML = `
                         <img src="${getImageUrl(animalData.foto_url)}" 
-                             class="w-100 border-radius-8px mb-20px" 
-                             alt="${animalData.nombre}"
-                             onerror="this.src='../images/placeholder-animal.jpg'">
+                            class="w-100 border-radius-8px mb-20px" 
+                            alt="${animalData.nombre}"
+                            onerror="this.src='../images/placeholder-animal.jpg'">
                         <h4 class="fw-700 text-dark-gray mb-15px">${animalData.nombre}</h4>
                         <p class="mb-10px"><strong>Raza:</strong> ${animalData.raza}</p>
                         <p class="mb-10px"><strong>Edad:</strong> ${animalData.edad} años</p>
@@ -344,11 +344,35 @@
         }
         
         /**
+         * Inicializar checkbox de términos
+         */
+        function initCheckbox() {
+            const checkbox = document.getElementById('terminos');
+            const label = document.querySelector('label[for="terminos"]');
+            
+            if (checkbox && label) {
+                label.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'A') {
+                        e.preventDefault();
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+                
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            }
+        }
+        
+        /**
          * Manejar envío del formulario
          */
         async function handleSubmit(e) {
             e.preventDefault();
-
+            
             const form = e.target;
             const btnEnviar = document.getElementById('btnEnviar');
             
@@ -360,14 +384,11 @@
             const apellido = document.getElementById('apellido').value.trim();
             const telefono = document.getElementById('telefono').value.trim();
             const email = document.getElementById('email').value.trim();
-            // Obtiene el valor, asegurando eliminar espacios antes y después
-            const fecha_adopcion_raw = document.getElementById('fecha_adopcion').value.trim(); 
+            const fecha_adopcion = document.getElementById('fecha_adopcion').value;
             const terminos = document.getElementById('terminos').checked;
             
-            console.log('Valor RAW de la fecha:', fecha_adopcion_raw);
-
-            // --- Validaciones (Se mantienen sin cambios) ---
-            if (!nombre || !apellido || !telefono || !email || !fecha_adopcion_raw) {
+            // Validaciones
+            if (!nombre || !apellido || !telefono || !email || !fecha_adopcion) {
                 showAlert('Por favor completa todos los campos', 'warning');
                 return;
             }
@@ -389,59 +410,13 @@
                 showAlert('El teléfono debe tener al menos 9 dígitos', 'warning');
                 return;
             }
-            // --- Fin de Validaciones Estándar ---
-
-            // ==========================================================
-            // ✅ SOLUCIÓN FINAL: PROCESAR FECHA ISO (YYYY-MM-DD) DEL INPUT
-            // ==========================================================
-
-            // 1. Validar si el campo tiene un valor (ya lo viste en la consola)
-            if (!fecha_adopcion_raw) {
-                showFieldError(document.getElementById('fecha_adopcion'), 'Campo requerido');
-                showAlert('Por favor ingresa una fecha.', 'warning'); 
-                return;
-            }
-
-            // 2. Crear el objeto Date directamente desde el string ISO YYYY-MM-DD.
-            // Usamos el constructor new Date(YYYY, MM-1, DD) para asegurar que la hora sea 00:00:00 UTC
-            // (Esto evita problemas de zona horaria con new Date(string))
-            const partes = fecha_adopcion_raw.split('-'); // Separa: [YYYY, MM, DD]
-            const anio = parseInt(partes[0], 10);
-            const mes = parseInt(partes[1], 10) - 1; // Meses base 0
-            const dia = parseInt(partes[2], 10);
-
-            const fechaCitaObj = new Date(anio, mes, dia);
-
-            // Comprobación de validez: Verifica si las partes resultaron en una fecha inválida
-            if (isNaN(fechaCitaObj) || fechaCitaObj.getFullYear() !== anio || fechaCitaObj.getMonth() !== mes || fechaCitaObj.getDate() !== dia) {
-                showFieldError(document.getElementById('fecha_adopcion'), 'Fecha inválida');
-                showAlert('La fecha ingresada no es una fecha válida (formato: YYYY-MM-DD).', 'warning');
-                return;
-            }
-
-            const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0); // Establecer la hora a medianoche
-
-            // 3. Validar que la fecha no sea anterior a hoy
-            if (fechaCitaObj < hoy) {
-                showFieldError(document.getElementById('fecha_adopcion'), 'Fecha pasada');
-                showAlert('La fecha de la cita no puede ser anterior a hoy.', 'warning');
-                return;
-            }
-
-            // 4. Convertir la fecha al formato ISO 8601 (necesario para el servidor)
-            const fechaAdopcionISO = fechaCitaObj.toISOString().split('T')[0]; // Ejemplo: "2025-11-12"
-            // ==========================================================
-            // 🛑 FIN DE CORRECCIÓN DE FECHA
-            // ==========================================================
             
             try {
                 setButtonLoading(btnEnviar, true, 'Procesando...');
                 
                 let duenioId = null;
                 
-                // Paso 1: Buscar si el dueño ya existe (Lógica de fetchAPI /api/duenios)
-                console.log('--- PASO 1: Buscando Dueño existente...');
+                // Paso 1: Buscar si el dueño ya existe
                 try {
                     const dueniosResponse = await fetchAPI('/api/duenios');
                     
@@ -452,17 +427,13 @@
                         
                         if (duenioExistente) {
                             duenioId = duenioExistente.id;
-                            console.log(`Dueño encontrado con ID: ${duenioId}`);
-                        } else {
-                            console.log('Dueño no encontrado. Se procederá a registrar.');
                         }
                     }
                 } catch (error) {
-                    // El error de red en GET /api/duenios es muy raro, pero lo registramos.
-                    console.error('ERROR CRÍTICO en PASO 1 (Búsqueda de Dueño):', error);
-                    // Si no se pudo buscar, asumimos que debemos registrar.
+                    console.log('Error al buscar dueño:', error);
                 }
-                // Paso 2: Si no existe, registrar nuevo dueño (Lógica de fetchAPI POST /api/duenios)
+                
+                // Paso 2: Si no existe, registrar nuevo dueño
                 if (!duenioId) {
                     const datosDuenio = { nombre, apellido, telefono, email };
                     
@@ -472,25 +443,20 @@
                     });
                     
                     if (!duenioResponse.success) {
-                        console.error('ERROR en PASO 2 (Registro de Dueño):', duenioResponse);
-                        // Lanza el error para que salte al catch principal
                         throw new Error(duenioResponse.message || 'Error al registrar tus datos');
                     }
                     
                     duenioId = duenioResponse.data.id;
-                    console.log(`Dueño registrado con éxito. ID: ${duenioId}`);
                 }
                 
-                // Paso 3: Registrar la adopción (Usando la fecha en formato ISO)
-                console.log('--- PASO 3: Registrando Adopción...');
+                // Paso 3: Registrar la adopción con tipo 'cita'
                 const datosAdopcion = {
-                    animal_id: animalId, // animalId debe estar definido globalmente
+                    animal_id: animalId,
                     duenio_id: duenioId,
-                    fecha_adopcion: fechaAdopcionISO 
+                    fecha_adopcion: fecha_adopcion,
+                    tipo: 'cita' // ✅ IMPORTANTE: Para generar PDF de cita
                 };
-
-                console.log('Datos enviados a /api/adopciones:', datosAdopcion);
-
+                
                 const adopcionResponse = await fetchAPI('/api/adopciones', {
                     method: 'POST',
                     body: JSON.stringify(datosAdopcion)
@@ -499,88 +465,26 @@
                 if (!adopcionResponse.success) {
                     throw new Error(adopcionResponse.message || 'Error al registrar la adopción');
                 }
-
-                console.log('Adopción registrada con éxito. Respuesta:', adopcionResponse);
                 
-                // ✅ OBTENER ID Y URL DE LA CITA DESDE LA RESPUESTA
+                // ✅ Obtener datos de la respuesta
                 const adopcionId = adopcionResponse.data.id;
-                // Si el servidor devuelve citaUrl, la usamos; si no, construimos una URL genérica.
-                const citaUrl = adopcionResponse.data.citaUrl || `/api/adopcion/pdf/cita?id=${adopcionId}&fecha=${fechaAdopcionISO}`;
-
-                // ==========================================================
-                // ✅ MOSTRAR MODAL DE ÉXITO Y DESCARGA
-                // ==========================================================
-                const modalExitoBody = document.querySelector('#modalExito .modal-body');
+                const pdfUrl = adopcionResponse.pdfUrl;
                 
-                // Usamos el objeto Date que creamos (fechaCitaObj) para el formateo seguro
-                const fechaFormateada = fechaCitaObj.toLocaleDateString('es-PE', {
-                    weekday: 'long',
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                });
-                
-                modalExitoBody.innerHTML = `
-                    <div class="mb-30px">
-                        <i class="bi bi-check-circle-fill text-success" style="font-size: 80px;"></i>
-                    </div>
-                    <h3 class="fw-700 text-dark-gray mb-20px">¡Cita Agendada Exitosamente!</h3>
-                    <p class="fs-18 text-muted mb-20px">
-                        Tu solicitud de adopción para <strong>${animalData.nombre}</strong> ha sido confirmada.
-                        El animal ya no está disponible.
-                    </p>
-                    <div class="alert alert-success border-radius-6px mb-20px">
-                        <div class="d-flex align-items-center mb-10px">
-                            <i class="bi bi-calendar-check text-success fs-2 me-15px"></i>
-                            <div>
-                                <strong>Tu cita para recogerlo está programada para:</strong><br>
-                                ${fechaFormateada}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-warning border-radius-6px mb-30px">
-                        <i class="bi bi-download text-success fs-3 me-10px"></i>
-                        <strong>PASO FINAL:</strong>
-                        <p class="mt-10px mb-0">Necesitas tu comprobante de cita. **Haz clic en el botón verde para descargarlo ahora**.</p>
-                    </div>
-                    
-                    <div class="d-grid gap-2">
-                        <button onclick="descargarCita('${citaUrl}', 'Cita-Adopcion-${adopcionId}.pdf')" 
-                                class="btn btn-large btn-success btn-rounded py-3">
-                            <i class="bi bi-download me-10px"></i>
-                            DESCARGAR DOCUMENTO DE CITA
-                        </button>
-                        <button onclick="window.location.href='index.html'" 
-                                class="btn btn-large btn-base-color btn-rounded">
-                            <i class="bi bi-house-door me-10px"></i>
-                            Volver al Inicio
-                        </button>
-                    </div>
-                `;
-                
-                // Mostrar modal
-                const modalExitoElement = document.getElementById('modalExito');
-                if (modalExitoElement) {
-                    // 1. Inicializar el objeto Modal de Bootstrap
-                    const modalExito = new bootstrap.Modal(modalExitoElement, {
-                        backdrop: 'static', // Evita que se cierre al hacer clic fuera
-                        keyboard: false,    // Evita que se cierre con Esc
-                        animation: false    // Deshabilita la transición CSS 'fade'
-                    });
-                    
-                    // 2. Usar un timeout para asegurar que el DOM haya reaccionado a los cambios de carga
+                // ✅ Descargar automáticamente el PDF
+                if (pdfUrl) {
                     setTimeout(() => {
-                        // Mostrar el modal
-                        modalExito.show(); 
-                        
-                        // Y forzar el body.modal-open (por si acaso tus estilos fallan)
-                        //document.body.classList.add('modal-open');
-                        
-                    },50); // 50 milisegundos de espera
-                } else {
-                    console.error("ERROR CRÍTICO: El ID 'modalExito' no fue encontrado en el DOM.");
+                        const link = document.createElement('a');
+                        link.href = pdfUrl;
+                        link.download = `Cita-Adopcion-${adopcionId}.pdf`;
+                        link.target = '_blank';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }, 500);
                 }
+                
+                // ✅ Mostrar modal de éxito
+                mostrarModalExito(adopcionId, pdfUrl, fecha_adopcion);
                 
                 // Limpiar formulario
                 form.reset();
@@ -589,76 +493,83 @@
                 console.error('Error:', error);
                 showAlert(error.message, 'error');
             } finally {
-                // Restaura el botón a su estado original
                 setButtonLoading(btnEnviar, false, '<i class="bi bi-send-fill me-10px"></i>Enviar Solicitud');
             }
         }
-
-        // Forzar que el checkbox sea clickeable
-        document.addEventListener('DOMContentLoaded', () => {
-        const checkbox = document.getElementById('terminos');
-        const label = document.querySelector('label[for="terminos"]');
-    
-            // Asegurar que el label active el checkbox
-            label.addEventListener('click', function(e) {
-                // Si no es el link, alternar checkbox
-                if (e.target.tagName !== 'A') {
-                    e.preventDefault();
-                    checkbox.checked = !checkbox.checked;
-                    checkbox.dispatchEvent(new Event('change'));
-                }
+        
+        /**
+         * Mostrar modal de éxito
+         */
+        function mostrarModalExito(adopcionId, pdfUrl, fechaCita) {
+            const modalExitoBody = document.querySelector('#modalExito .modal-body');
+            
+            // Formatear fecha
+            const fechaFormateada = new Date(fechaCita).toLocaleDateString('es-PE', {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
             });
             
-            // Validar checkbox en tiempo real
-            checkbox.addEventListener('change', function() {
-                if (this.checked) {
-                    this.classList.remove('is-invalid');
-                }
+            modalExitoBody.innerHTML = `
+                <div class="mb-30px">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 80px;"></i>
+                </div>
+                <h3 class="fw-700 text-dark-gray mb-20px">¡Cita Confirmada!</h3>
+                <p class="fs-18 text-muted mb-20px">
+                    Tu cita para adoptar a <strong>${animalData.nombre}</strong> ha sido registrada exitosamente.
+                </p>
+                <div class="alert alert-success border-radius-6px mb-20px">
+                    <div class="d-flex align-items-center mb-10px">
+                        <i class="bi bi-calendar-check text-success fs-2 me-15px"></i>
+                        <div>
+                            <strong>Fecha de tu cita:</strong><br>
+                            ${fechaFormateada}
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-info border-radius-6px mb-30px">
+                    <i class="bi bi-file-pdf text-danger fs-3 me-10px"></i>
+                    <strong>Tu documento de cita se ha descargado automáticamente</strong><br>
+                    <small>Imprímelo y tráelo el día de la cita. Si no se descargó, usa el botón de abajo.</small>
+                </div>
+                <div class="d-grid gap-2">
+                    <button onclick="descargarCita('${pdfUrl}')" 
+                            class="btn btn-large btn-success btn-rounded">
+                        <i class="bi bi-download me-10px"></i>
+                        Descargar Documento de Cita
+                    </button>
+                    <button onclick="window.location.href='index.html'" 
+                            class="btn btn-large btn-base-color btn-rounded">
+                        <i class="bi bi-house-door me-10px"></i>
+                        Volver al Inicio
+                    </button>
+                    <button onclick="window.location.href='index.html'" 
+                            class="btn btn-medium btn-outline-dark btn-rounded">
+                        Ver Más Animales
+                    </button>
+                </div>
+            `;
+            
+            // Mostrar modal
+            const modalExito = new bootstrap.Modal(document.getElementById('modalExito'), {
+                backdrop: 'static',
+                keyboard: false
             });
-        });
-
-
-        /**
-         * Descargar PDF del compromiso
-         */
-        async function descargarPDF(adopcionId) {
-            try {
-                const url = `/api/adopciones/${adopcionId}/descargar`;
-                
-                // Mostrar loading
-                showAlert('Descargando documento...', 'info', 2000);
-                
-                // Crear link temporal y hacer click
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `Compromiso-Adopcion-${adopcionId}.pdf`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                // Mensaje de éxito
-                setTimeout(() => {
-                    showAlert('Documento descargado correctamente', 'success', 3000);
-                }, 500);
-                
-            } catch (error) {
-                console.error('Error al descargar PDF:', error);
-                showAlert('Error al descargar el documento', 'error');
-            }
+            
+            modalExito.show();
         }
-
+        
         /**
-         * Descargar documento de cita.
-         * @param {string} citaUrl URL de la API para generar el PDF de la cita.
-         * @param {string} fileName Nombre del archivo para la descarga.
+         * Descargar documento de cita
          */
-        function descargarCita(citaUrl, fileName = 'Cita-Adopcion.pdf') {
+        function descargarCita(citaUrl) {
             try {
                 showAlert('Descargando documento de cita...', 'info', 2000);
                 
                 const link = document.createElement('a');
                 link.href = citaUrl;
-                link.download = fileName; // Usa el nombre de archivo dinámico
+                link.download = 'Cita-Adopcion.pdf';
                 link.target = '_blank';
                 document.body.appendChild(link);
                 link.click();
@@ -669,8 +580,8 @@
                 }, 500);
                 
             } catch (error) {
-                console.error('Error al descargar el documento:', error);
-                showAlert('Error al descargar el documento. Revisa la consola.', 'error');
+                console.error('Error:', error);
+                showAlert('Error al descargar el documento', 'error');
             }
         }
     </script>
