@@ -253,6 +253,25 @@ const adopcionController = {
                 error: error.message
             });
         }
+    },
+
+    // PUT /api/adopciones/:id/finalizar - Finalizar Adopción
+    finalizarAdopcion: async (req, res) => {
+        const id = req.params.id;
+        try {
+            await adopcionModel.finalizar(id);
+            res.json({
+                success: true,
+                message: 'Adopción finalizada y animal marcado como adoptado.'
+            });
+        } catch (error) {
+            console.error('Error al finalizar adopción:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al finalizar adopción',
+                error: error.message
+            });
+        }
     }
 };
 

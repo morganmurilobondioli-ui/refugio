@@ -110,6 +110,28 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="btn-group" role="group" aria-label="Filtro de Adopciones">
+                    <button type="button" 
+                            class="btn btn-primary btn-filtro-adopcion" 
+                            data-estado="en_proceso">
+                        En Proceso
+                    </button>
+                    <button type="button" 
+                            class="btn btn-light btn-filtro-adopcion" 
+                            data-estado="finalizadas">
+                        Finalizadas
+                    </button>
+                    <button type="button" 
+                            class="btn btn-light btn-filtro-adopcion" 
+                            data-estado="disponible">
+                        Disponibles
+                    </button>
+                    </div>
+                </div>
+            </div>
 
             <!-- Tabla de adopciones -->
             <div class="row">
@@ -124,8 +146,7 @@
                                         <th>Dueño</th>
                                         <th>Fecha Adopción</th>
                                         <th>Registrado</th>
-                                        <th>Documento</th>
-                                        <th width="100">Acciones</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
