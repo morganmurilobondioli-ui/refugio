@@ -282,6 +282,10 @@ function getEstadoBadge(estado) {
 function renderizarAdopciones() {
     const tbody = document.querySelector('#tablaAdopciones tbody');
 
+    // 🔍 AGREGAR ESTE LOG
+    console.log('Primera adopción:', adopcionesFiltradas[0]);
+    console.log('Fecha registro:', adopcionesFiltradas[0]?.fecha_registro);
+
     if (!tbody) {
         console.error('No se encontró tbody al renderizar');
         return;

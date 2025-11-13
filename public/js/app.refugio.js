@@ -362,6 +362,45 @@ function truncateText(text, length = 100) {
     return text.substring(0, length) + '...';
 }
 
+/**
+ * Formatear fecha a formato legible
+ * @param {string} dateString - Fecha en formato ISO
+ * @param {boolean} includeTime - Si incluir hora
+ * @returns {string} Fecha formateada
+ */
+function formatDate(dateString, includeTime = false) {
+    if (!dateString) return 'N/A';
+    
+    // ✅ Si ya está formateada (contiene '/'), devolverla tal cual
+    if (typeof dateString === 'string' && dateString.includes('/')) {
+        return dateString;
+    }
+    
+    try {
+        const date = new Date(dateString);
+        
+        if (isNaN(date.getTime())) {
+            console.error('Fecha inválida:', dateString);
+            return 'Fecha inválida';
+        }
+        
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        
+        if (includeTime) {
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        }
+        
+        return `${day}/${month}/${year}`;
+    } catch (error) {
+        console.error('Error al formatear fecha:', error);
+        return dateString; // Devolver el original si hay error
+    }
+}
+
 
 // ==============================================
 // 🐾 NUEVAS FUNCIONES DE UTILIDAD PARA EL REFUGIO 🐾
